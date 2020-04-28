@@ -1,0 +1,12 @@
+﻿@model IEnumerable<CustomIdentityApp.Models.Agency>
+@{
+    ViewBag.Title = "Все учреждения";
+}
+<a asp-action="Create">Добавить пользователя</a>
+<table class="table">
+    <tr><td>Имя</td></tr>
+    @foreach (var item in Model)
+    {
+        <tr><td>@item.Name</td>></tr>
+    }
+</table>

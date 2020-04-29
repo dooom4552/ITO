@@ -1,0 +1,23 @@
+﻿@model ITO.Models.YearEvent
+@{
+    ViewBag.Title = "Добавление предложения годового плана";
+}
+    <form asp-action="create" asp-controller="YearEvent">
+        <div class="form-group">
+            <label asp-for="EventText" class="control-label">Текс предложения</label>
+            <input type="text" asp-for="EventText" class="form-control" />
+        </div>
+        <div class="form-inline">
+            <label>Тип данных</label>
+            <select name="unitId"  class="form-control"/>
+            @foreach(Unit unit in Model.Units)
+            {
+                <option value="@unit.Id">@unit.Name</option>
+            }
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Добавить" class="btn btn-default" />
+        </div>
+    </form>
+

@@ -1,0 +1,13 @@
+﻿@model ITO.Models.Agency
+@{
+    ViewData["Title"] = "Подробно";
+}
+    <a asp-controller="YearEvent" asp-action="Create" asp-route-id="@Model.Id">Добавить предложение годового плана</a>
+<h2>Учреждение @Model.Name</h2>
+<div>
+    <dl class="dl-horizontal">
+        <dt>Идентификатор</dt>
+        <dd>@Model.Id</dd>             
+    </dl>
+</div>
+

@@ -10,6 +10,10 @@ namespace ITO.Models
     public class ApplicationContext : IdentityDbContext<User>
     {
         public DbSet<Agency> Agencies { get; set; }
+        public DbSet<YearEvent> YearEvents { get; set; }
+        public DbSet<PartYearEvent> PartYearEvents { get; set; }
+        public DbSet<Unit> Units { get; set; }
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             : base(options)
         {

@@ -27,6 +27,10 @@ namespace ITO
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IUserValidator<User>, CustomUserValidator>();
+            services.AddDbContext<AllContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("AllConnection")));
+
+
             services.AddDbContext<ApplicationContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
          
@@ -40,7 +44,7 @@ namespace ITO
                 opts.User.AllowedUserNameCharacters = ".@abcdefghijklmnopqrstuvwxyz"; // допустимые символы
             })
             .AddEntityFrameworkStores<ApplicationContext>();
-
+            
 
             services.AddControllersWithViews();
         }

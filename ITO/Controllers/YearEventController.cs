@@ -11,8 +11,8 @@ namespace ITO.Controllers
 {
     public class YearEventController : Controller
     {
-        private ApplicationContext db;
-        public YearEventController(ApplicationContext context)
+        private AllContext db;
+        public YearEventController(AllContext context)
         {
             db = context;
         }

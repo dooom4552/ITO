@@ -11,8 +11,8 @@ namespace ITO.Controllers
 {
     public class AgencyController : Controller
     {        
-        private ApplicationContext db;
-        public AgencyController(ApplicationContext context)
+        private AllContext db;
+        public AgencyController(AllContext context)
         {          
             db = context;
         }

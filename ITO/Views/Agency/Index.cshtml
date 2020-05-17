@@ -4,14 +4,14 @@
 }
 <a asp-action="Create">Добавить учреждение</a>
 <table class="table">
-
-    @foreach (var item in Model)
+    
+    @foreach (var agency in Model)
     {
         <tr>
-            <td>@item.Name</td>
+            <td>@agency.Name</td>
             <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |                
-                <a asp-action="Delete"  asp-route-id="@item.Id">Удалить</a>
+                <a asp-action="Details"  asp-route-id="@agency.Id" asp-route-DataYearVM="@DateTime.Now.Year.ToString()">Подробнее</a> |                
+                <a asp-action="Delete"  asp-route-id="@agency.Id">Удалить</a>
             </td>
         </tr>
      }

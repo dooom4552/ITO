@@ -2,6 +2,7 @@
 using ITO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace ITO.Controllers
 {
     public class AgencyController : Controller
     {        
-        private AllContext db;
+        private readonly AllContext db;
         public AgencyController(AllContext context)
         {          
             db = context;
@@ -37,16 +38,33 @@ namespace ITO.Controllers
             }
             return NotFound();
         }
-        public async Task<IActionResult> Details(int? id)
+       
+        public async Task<IActionResult> Details(int? id, string DataYearVM)
         {
-            if (id != null)
+            if(id != null)
             {
-                Agency agency = await db.Agencies.FirstOrDefaultAsync(a => a.Id == id);
-                if (agency != null)
-                    return View(agency);
+
+                if (DataYearVM == null)
+                {
+                    DataYearVM = DateTime.Now.Year.ToString();
+                }
+
+                DetailsAgencyViewModel model = new DetailsAgencyViewModel()
+                {
+                    AgencyId = (int)id,
+                    Agency = await db.Agencies.FirstOrDefaultAsync(a => a.Id == id),
+                    YearEvents =await db.YearEvents.Where(ye => ye.AgencyId == id && ye.DataYear== DataYearVM).ToListAsync(),
+                    DataYears =  await db.DataYears.ToListAsync(),               
+                };
+                if (model != null)
+                    return View(model);
             }
             return NotFound();
         }
+
+
+
+
 
         [HttpGet]
         [ActionName("Delete")]

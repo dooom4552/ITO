@@ -1,28 +1,196 @@
-﻿@model ITO.Models.YearEvent
+﻿@model ITO.ViewModels.CreateYearEventViewModel
 @{
     ViewBag.Title = "Добавление предложения годового плана";
 }
-    <form asp-action="create" asp-controller="YearEvent">
-        <div class="form-group">
-            <label asp-for="EventText" class="control-label">Текс предложения</label>
-            <input type="text" asp-for="EventText" class="form-control" />
-        </div>
+<h2>Учреждение @Model.Agency.Name</h2>
+<h3>Порядковый номер @Model.Number</h3>
+<form name="myForm" asp-action="create" asp-controller="YearEvent" method="post"
+      asp-route-AgencyId="@Model.AgencyId" asp-route-Number="@Model.Number">
+    <table class="table">
+        <tr>
+            <th colspan="5">Текст мероприятия</th>
+        </tr>
+        <tr>
+            <td colspan="5">
+                <textarea required 
+                          type="text" asp-for="EventText" class="form-control"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th>1 кв</th>
+            <th>2 кв</th>
+            <th>3 кв</th>
+            <th>4 кв</th>
+        </tr>
+        <tr>
 
-        
-        
+            <td> <input type="number" min="0" asp-for="FirstQuarter" class="form-control" /></td>
+            <td> <input type="number" min="0" asp-for="SecondQuarter" class="form-control" /></td>
+            <td> <input type="number" min="0" asp-for="ThirdQuarter" class="form-control" /></td>
+            <td> <input type="number" min="0" asp-for="FourthQuarter" class="form-control" /></td>
+            <td>
+                <select required asp-for="Unit" style="width:auto" class="alert-dismissible">
+                    @foreach (Unit unit in Model.Units)
+                    {
+                        <option class="table" value="@unit.Name">@unit.Name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <select required asp-for="TypeSection" style="width:auto" class="alert-dismissible">
+                    @foreach (TypeSection typeSection in Model.TypeSections)
+                    {
+                        <option class="table" value="@typeSection.Name">@typeSection.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select required asp-for="SectionId" onchange="SectionFilter();" id="select" style="width:auto" class="alert-dismissible">
+                    @foreach (Section section1 in Model.Sections)
+                    {
+                        <option class="table" value="@section1.Id">@section1.Name</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <select required asp-for="SubSectionId" onchange="SubSectionFilter();" id="subselect" style="width:auto" class="alert-dismissible">
+                </select>
+            </td>
+            <td>
+                <select required asp-for="SubSection1Id" id="subselect1" style=" width:auto" class="alert-dismissible">
+                </select>
+            </td>
+            <td>
+                <select required asp-for="DataYear" style=" width:auto" class="alert-dismissible">
+                    @foreach (DataYear dataYear in Model.DataYears)
+                    {
+                        <option class="table" value="@dataYear.Name">@dataYear.Name</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="table">
 
-        <div class="form-group">
-            <input type="submit" value="Добавить" class="btn btn-default" />
-        </div>
-    </form>
-    <form class="form-inline">
-        <label>Выберите компанию:</label>
-        <select name="companyId" class="form-control">
-            @foreach (Unit unit in Model.Units)
+                <input type="submit" value="Добавить" class="btn btn-secondary btn-lg btn-block" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+
+
+<script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    function SectionFilter()
+    {
+        var ArraySelections = new Array();
+        var ArraySubSelections = new Array();
+       @{
+           List<string> SectionNames = new List<string>();
+           List<int> SectionId = new List<int>();
+
+           List<string> SubSectionNames = new List<string>();
+           List<int> SubSectionId = new List<int>();
+           List<int> SubSectionSectionId = new List<int>();
+
+
+           List<string> SubSection1Names = new List<string>();
+           List<int> SubSection1Id = new List<int>();
+           List<int> SubSection1SubSectionId = new List<int>();
+        }
+        @foreach (var item in Model.Sections)
+        {
+            SectionNames.Add(item.Name);
+            SectionId.Add(item.Id);
+        };
+
+        @foreach (var item in Model.SubSections)
+        {
+            SubSectionNames.Add(item.Name);
+            SubSectionId.Add(item.Id);
+            SubSectionSectionId.Add(item.SectionId);
+        };
+
+        @foreach (var item in Model.SubSection1s)
+        {
+            SubSection1Names.Add(item.Name);
+            SubSection1Id.Add(item.Id);
+            SubSection1SubSectionId.Add(item.SubSectionId);
+        };
+        var SelectionsNetNames = @Json.Serialize(SectionNames);
+        var SelectionsNetId = @Json.Serialize(SectionId);
+
+        var SubSelectionsNetNames = @Json.Serialize(SubSectionNames);
+        var SubSelectionsNetId = @Json.Serialize(SubSectionId);
+        var SubSelectionsNetSectionId = @Json.Serialize(SubSectionSectionId);
+
+        for (i = 0; i < @Model.Sections.Count; i++)
+        {
+            ArraySelections.push({ Id: SelectionsNetId[i], Name: SelectionsNetNames[i] })
+        }
+
+        for (i = 0; i < @Model.SubSections.Count; i++)
+        {
+            ArraySubSelections.push({ Id: SubSelectionsNetId[i], Name: SubSelectionsNetNames[i], SectionId: SubSelectionsNetSectionId[i] })
+
+        }
+         $('#select').click(function () {
+             var value = $('#select option:selected').val();
+
+             var ArraySubSelectionsFilter = ArraySubSelections.filter(function (subsec) {
+                 return subsec.SectionId == value;
+             })
+
+             $('#subselect option:contains()').remove();
+
+             for (var i = 0; i < ArraySubSelectionsFilter.length; i++)
+             {
+                 $('#subselect').prepend('<option value="' + ArraySubSelectionsFilter[i].Id + '">' + ArraySubSelectionsFilter[i].Name + '</option>');
+             }
+    });
+
+    }
+
+    function SubSectionFilter()
+    {
+        var ArraySubSelections = new Array();
+        var ArraySubSelection1s = new Array();
+
+        var SubSelectionsNetNames = @Json.Serialize(SubSectionNames);
+        var SubSelectionsNetId = @Json.Serialize(SubSectionId);
+        var SubSelectionsNetSectionId = @Json.Serialize(SubSectionSectionId);
+
+        var SubSelection1sNetNames = @Json.Serialize(SubSection1Names);
+        var SubSelection1sNetId = @Json.Serialize(SubSection1Id);
+        var SubSelection1sNetSectionId = @Json.Serialize(SubSection1SubSectionId);
+
+        for (i = 0; i < @Model.SubSections.Count; i++)
+        {
+            ArraySubSelections.push({ Id: SubSelectionsNetId[i], Name: SubSelectionsNetNames[i], SectionId: SubSelectionsNetSectionId[i] })
+        }
+
+        for (i = 0; i < @Model.SubSection1s.Count; i++)
+        {
+            ArraySubSelection1s.push({ Id: SubSelection1sNetId[i], Name: SubSelection1sNetNames[i], SectionId: SubSelection1sNetSectionId[i] })
+        }
+
+        $('#subselect').click(function () {
+
+            var value = $('#subselect option:selected').val();
+
+            var ArraySubSelection1sFilter = ArraySubSelection1s.filter
+                (function (subsec) { return subsec.SectionId == value; });
+
+            $('#subselect1 option:contains()').remove();
+
+            for (var i = 0; i < ArraySubSelection1sFilter.length; i++)
             {
-                <option value="@unit.Id">@unit.Name</option>
-            }
-        </select>
-        <input type="submit" />
-    </form>
+                $('#subselect1').prepend('<option value="' + ArraySubSelection1sFilter[i].Id + '">' + ArraySubSelection1sFilter[i].Name + '</option>');
+            };
+        })
+    }
+</script>
 

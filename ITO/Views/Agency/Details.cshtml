@@ -1,13 +1,68 @@
-﻿@model ITO.Models.Agency
+﻿@model ITO.ViewModels.DetailsAgencyViewModel
 @{
     ViewData["Title"] = "Подробно";
 }
-    <a asp-controller="YearEvent" asp-action="Create" asp-route-id="@Model.Id">Добавить предложение годового плана</a>
-<h2>Учреждение @Model.Name</h2>
+    <a asp-controller="YearEvent" asp-action="Create"  asp-route-id="@Model.AgencyId"  method="get">Добавить предложение годового плана</a>
+<h2>Учреждение @Model.Agency.Name</h2>
 <div>
     <dl class="dl-horizontal">
         <dt>Идентификатор</dt>
-        <dd>@Model.Id</dd>             
+        <dd>@Model.AgencyId</dd> 
     </dl>
 </div>
+<table class="table">
+    <tr>
+        <th>Выберите год план</th>
+    </tr>
+    @foreach (DataYear data in Model.DataYears)
+    {
+        <tr>
+            <td>@data.Id</td>
+            <td>@data.Name</td>
+            <td>
+                <form>
+                    <a class="btn btn-sm btn-primary" asp-controller="Agency" asp-action="Details" asp-route-id="@Model.AgencyId" asp-route-DataYearVM="@data.Name">Выбрать</a>
+                </form>
+            </td>
+        </tr>
+        
+    }
 
+</table>
+
+    <table class="table">
+        <tr>
+            <th>Номер</th>
+            <th>Текст Мероприятия</th>
+            <th>1 кв</th>
+            <th>2 кв</th>
+            <th>3 кв</th>
+            <th>4 кв</th>
+        </tr>
+        @foreach (var yevent in Model.YearEvents)
+        {
+            <tr>
+                <td>@yevent.Number</td>
+                <td>@yevent.EventText</td>
+                <td>@yevent.FirstQuarter</td>
+                <td>@yevent.SecondQuarter</td>
+                <td>@yevent.ThirdQuarter</td>
+                <td>@yevent.FourthQuarter</td>
+                <td>@yevent.Unit</td>
+                <td>@yevent.Section</td>
+                <td>@yevent.SubSection</td>
+                <td>@yevent.SubSection1</td>
+                <td>@yevent.TypeSection</td>
+                <td>@yevent.DataYear</td>
+                <td>
+                    <form id="MyForm" asp-controller="YearEvent" asp-action="Delete" asp-route-id="@yevent.Id" method="post">
+                        <a asp-controller="YearEvent" class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@yevent.Id">Изменить</a>
+                        <a asp-controller="YearEvent" class="btn btn-sm btn-primary" asp-action="Details" asp-route-id="@yevent.Id">Подробнее</a>
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>

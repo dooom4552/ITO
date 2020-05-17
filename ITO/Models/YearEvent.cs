@@ -8,15 +8,19 @@ namespace ITO.Models
     public class YearEvent
     {
         public int Id { get; set; }
-        public Agency Agency { get; set; }
+        public int AgencyId { get; set; }   
         public int Number { get; set; }// номер пункта в годовом плане
         public string EventText { get; set; }
         public int FirstQuarter { get; set; }
         public int SecondQuarter { get; set; }
         public int ThirdQuarter { get; set; }
         public int FourthQuarter { get; set; }
-        public Unit Unit { get; set; }//мера
-        public List< Unit> Units { get; set; }//мера
-        public List<PartYearEvent> PartYearEvents { get; set; }// коллекция выполненных мероприятий
+        public string Unit { get; set; }//мера                        
+        public string Section { get; set; }//ТСО ИСОН  //надо класс +                
+        public string SubSection { get; set; }//мера    ППК или огр или ППЗ    // видео или ОИ  //надо класс   +            
+        public string SubSection1 { get; set; }//мера  огр ОО ЭО // //надо класс 
+        public string TypeSection { get; set; }//ремонт, замена, кап ремонт //надо класс
+        public string DataYear { get; set; }//
+
     }
 }

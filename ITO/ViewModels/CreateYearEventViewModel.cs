@@ -23,6 +23,7 @@ namespace ITO.ViewModels
         public int SectionId { get; set; }//ремонт как ремонт
         public List<Section> Sections { get; set; }//ИСО ТСОН
         public int SubSectionId { get; set; }//ИСО ТСОН
+        public string SubSection { get; set; }
         public List<SubSection> SubSections { get; set; }//Видео ППК
         public int SubSection1Id { get; set; }//Видео ППК
         public List<SubSection1> SubSection1s { get; set; }//Видео внутр  ТЭОИ

@@ -25,13 +25,15 @@ namespace ITO.ViewModels
         public string TypeSection { get; set; }//мера
         public List<TypeSection> TypeSections { get; set; }//ремонт как ремонт
 
-        public string Section { get; set; }//ремонт как ремонт
+        public int SectionId { get; set; }//ремонт как ремонт
         public List<Section> Sections { get; set; }//ИСО ТСОН
 
         public int SubSectionId { get; set; }//ИСО ТСОН
+        public string SubSection { get; set; }//ИСО ТСОН 
         public List<SubSection> SubSections { get; set; }//Видео ППК
 
         public int SubSection1Id { get; set; }//Видео ППК
+        public string SubSection1 { get; set; }//Видео ППК
         public List<SubSection1> SubSection1s { get; set; }//Видео внутр  ТЭОИ
 
         public string DataYear { get; set; }//

@@ -11,7 +11,7 @@ namespace ITO.Controllers
     //[Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
-        UserManager<User> _userManager;
+        readonly UserManager<User> _userManager;
         public UsersController(UserManager<User> userManager)
         {
             _userManager = userManager;

@@ -8,7 +8,7 @@ namespace ITO.Models
     public class PartYearEvent
     {
         public int Id { get; set; }
-        public int AgencyId { get; set; }
+        public int YearEventId { get; set; }
         public int NumberYearEvent { get; set; }// порядковый номер в год плане
         public int Done { get; set; }// сколько сделано
         public string Img { get; set; }//ссылка на картинку

@@ -1,18 +1,18 @@
-﻿using System;
+﻿using ITO.Models;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ITO.Models
+namespace ITO.ViewModels
 {
-    public class YearEvent
+    public class DeleteYearEventViewModel
     {
         public int Id { get; set; }
-        public int AgencyId { get; set; }   
+        public int AgencyId { get; set; }
         public int Number { get; set; }// номер пункта в годовом плане
-        public string EventText { get; set; }       
-        public int FirstQuarter { get; set; }        
+        public string EventText { get; set; }
+        public int FirstQuarter { get; set; }
         public int SecondQuarter { get; set; }
         public int ThirdQuarter { get; set; }
         public int FourthQuarter { get; set; }
@@ -22,6 +22,7 @@ namespace ITO.Models
         public string SubSection1 { get; set; }//мера  огр ОО ЭО // //надо класс 
         public string TypeSection { get; set; }//ремонт, замена, кап ремонт //надо класс
         public string DataYear { get; set; }//
+        public List<PartYearEvent> partYearEvents { get; set; }
 
     }
 }

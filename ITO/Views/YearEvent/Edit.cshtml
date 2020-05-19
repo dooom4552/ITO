@@ -1,9 +1,10 @@
-﻿@model ITO.ViewModels.CreateYearEventViewModel
+﻿@model ITO.ViewModels.EditYearEventViewModel
 @{
-    ViewBag.Title = "Добавление предложения годового плана";
+    ViewBag.Title = "Изменение предложения годового плана";
 }
 <h2>Учреждение @Model.Agency.Name</h2>
-<form id="forgot_pass_form" name="myForm" asp-action="create" asp-controller="YearEvent" method="post"
+<h3>Порядковый номер @Model.Number</h3>
+<form name="myForm" asp-action="edit" asp-controller="YearEvent" method="post"
       asp-route-AgencyId="@Model.AgencyId" asp-route-Number="@Model.Number">
     <table class="table">
         <tr>
@@ -12,7 +13,7 @@
         <tr>
             <td colspan="5">
                 <textarea required
-                          type="text" asp-for="EventText" class="form-control"></textarea>
+                          type="text" asp-for="EventText" class="form-control">@Model.EventText</textarea>
             </td>
         </tr>
         <tr>
@@ -23,15 +24,22 @@
         </tr>
         <tr>
 
-            <td> <input type="number" min="0" asp-for="FirstQuarter" class="form-control send" id="FirstQuarter" name="FirstQuarter" /></td>
-            <td> <input type="number" min="0" asp-for="SecondQuarter" class="form-control send" id="SecondQuarter" name="SecondQuarter" /></td>
-            <td> <input type="number" min="0" asp-for="ThirdQuarter" class="form-control send" id="ThirdQuarter" name="ThirdQuarter" /></td>
-            <td> <input type="number" min="0" asp-for="FourthQuarter" class="form-control send" id="FourthQuarter" name="FourthQuarter" /></td>
+            <td> <input type="number" min="0" asp-for="FirstQuarter" class="form-control" />@Model.FirstQuarter</td>
+            <td> <input type="number" min="0" asp-for="SecondQuarter" class="form-control" />@Model.SecondQuarter</td>
+            <td> <input type="number" min="0" asp-for="ThirdQuarter" class="form-control" />@Model.ThirdQuarter</td>
+            <td> <input type="number" min="0" asp-for="FourthQuarter" class="form-control" />@Model.FourthQuarter</td>
             <td>
-                <select required asp-for="Unit" style="width:auto" class="alert-dismissible">
+                <select required asp-for="Unit" style="width:auto" class="alert-dismissible">             
                     @foreach (Unit unit in Model.Units)
                     {
+                        if (unit.Name == Model.Unit)
+                        {
+                        <option class="table" selected value="@unit.Name">@unit.Name</option>
+                        }
+                        else
+                        {
                         <option class="table" value="@unit.Name">@unit.Name</option>
+                        }
                     }
                 </select>
             </td>
@@ -41,7 +49,14 @@
                 <select required asp-for="TypeSection" style="width:auto" class="alert-dismissible">
                     @foreach (TypeSection typeSection in Model.TypeSections)
                     {
+                        if (typeSection.Name == Model.TypeSection)
+                        {
+                            <option class="table" selected value="@typeSection.Name">@typeSection.Name</option>
+                        }
+                        else
+                        {
                         <option class="table" value="@typeSection.Name">@typeSection.Name</option>
+                        }
                     }
                 </select>
             </td>
@@ -49,23 +64,39 @@
                 <select required asp-for="SectionId" onchange="SectionFilter();" id="select" style="width:auto" class="alert-dismissible">
                     @foreach (Section section1 in Model.Sections)
                     {
+                        if (section1.Id == Model.SectionId)
+                        {
+                            <option class="table" selected value="@section1.Id">@section1.Name</option>
+                        }
+                        else
+                        {
                         <option class="table" value="@section1.Id">@section1.Name</option>
+                        }
                     }
                 </select>
             </td>
             <td>
                 <select required asp-for="SubSectionId" onchange="SubSectionFilter();" id="subselect" style="width:auto" class="alert-dismissible">
+                    <option class="table" selected value="@Model.SubSectionId">@Model.SubSection</option>
                 </select>
             </td>
             <td>
                 <select required asp-for="SubSection1Id" id="subselect1" style=" width:auto" class="alert-dismissible">
+                    <option class="table" selected value="@Model.SubSection1Id">@Model.SubSection1</option>
                 </select>
             </td>
             <td>
                 <select required asp-for="DataYear" style=" width:auto" class="alert-dismissible">
                     @foreach (DataYear dataYear in Model.DataYears)
                     {
+                        if (dataYear.Name == Model.DataYear)
+                        {
+                        <option class="table" selected value="@dataYear.Name">@dataYear.Name</option>  
+                        }
+                        else
+                        {
                         <option class="table" value="@dataYear.Name">@dataYear.Name</option>
+                        }
                     }
                 </select>
             </td>
@@ -73,12 +104,15 @@
         <tr>
             <td colspan="6" class="table">
 
-                <input type="submit" value="Добавить" class="btn btn-secondary btn-lg btn-block" />
+                <input type="submit" value="Изменить" class="btn btn-secondary btn-lg btn-block" />
             </td>
         </tr>
     </table>
 </form>
 
+
+
+<script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
 <script>
     function SectionFilter()
     {
@@ -189,5 +223,3 @@
         })
     }
 </script>
-
-

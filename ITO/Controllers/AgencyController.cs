@@ -74,7 +74,15 @@ namespace ITO.Controllers
             {
                 Agency agency = await db.Agencies.FirstOrDefaultAsync(a => a.Id == id);
                 if (agency != null)
-                    return View(agency);
+                {
+                    DetailsAgencyViewModel model = new DetailsAgencyViewModel()
+                    {
+                        Agency = await db.Agencies.FirstOrDefaultAsync(ag => ag.Id == id),
+                        AgencyId = (int)id,
+                        YearEvents = await db.YearEvents.Where(ye=> ye.AgencyId == agency.Id).ToListAsync(),                       
+                    };
+                    return View(model);
+                }                    
             }
             return NotFound();
         }

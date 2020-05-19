@@ -1,4 +1,4 @@
-﻿@model ITO.Models.Agency
+﻿@model ITO.ViewModels.DetailsAgencyViewModel
 @{
     ViewBag.Title = "Удаление пользователя";
 }
@@ -7,15 +7,24 @@
     <dl class="dl-horizontal">
         <dt>Имя</dt>
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Agency.Name)
         </dd>        
     </dl>
 
     <div>
+        @if (Model.YearEvents.Count > 0)
+        {
+        <h4>Удалить не возможно <br />
+        сначало удалите мероприятия годового плана
+        </h4>
+        }
+        else
+        {
         <form  asp-action="Delete" method="post">
             <div class="form-group">
                 <input type="submit" class="btn btn-default" value="Удалить" />
             </div>
         </form>
+        }
     </div>
 </div>

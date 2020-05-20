@@ -1,0 +1,159 @@
+﻿@model ITO.ViewModels.EditSectionViewModel
+@{
+    ViewData["Title"] = "Фильтры";
+}
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#unit" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Метры штуки
+    </a>
+    <a class="btn btn-primary" data-toggle="collapse" href="#typeSection" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Типы мероприятий
+    </a>
+    <a class="btn btn-primary" data-toggle="collapse" href="#section" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Разделы
+    </a> 
+    <a class="btn btn-primary" data-toggle="collapse" href="#subsection" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Фильтры
+    </a>
+    <a class="btn btn-primary" data-toggle="collapse" href="#subsection1" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Доп фильтры
+    </a>
+    <a class="btn btn-primary" data-toggle="collapse" href="#dataYear" role="button" aria-expanded="false" aria-controls="collapseExample">
+            Года
+    </a>
+</p>
+<div class="collapse" id="unit">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите фильтр</th>
+            </tr>
+            @foreach(Unit unit in Model.Units)
+            {
+                <tr>
+                    <td>@unit.Id</td>
+                    <td>@unit.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteUnit" asp-route-id="@unit.Id" >Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+</div>
+<div class="collapse" id="typeSection">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите фильтр</th>
+            </tr>
+            @foreach(TypeSection typeSection in Model.TypeSections)
+            {
+                <tr>
+                    <td>@typeSection.Id</td>
+                    <td>@typeSection.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@typeSection.Id" >Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+</div>
+<div class="collapse" id="section">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите фильтр</th>
+            </tr>
+            @foreach(Section section1 in Model.Sections)
+            {
+                <tr>
+                    <td>@section1.Id</td>
+                    <td>@section1.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@section1.Id" >Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+</div>
+<div class="collapse" id="subsection">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите фильтр</th>
+            </tr>
+            @foreach(SubSection subsection in Model.SubSections)
+            {
+                <tr>
+                    <td>@subsection.Id</td>
+                    <td>@subsection.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection.Id" >Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+</div>
+<div class="collapse" id="subsection1">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите фильтр</th>
+            </tr>
+            @foreach(SubSection1 subsection1 in Model.SubSection1s)
+            {
+                <tr>
+                    <td>@subsection1.Id</td>
+                    <td>@subsection1.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection1.Id" >Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+</div>
+<div class="collapse" id="dataYear">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите фильтр</th>
+            </tr>
+            @foreach(DataYear dataYear in Model.DataYears)
+            {
+                <tr>
+                    <td>@dataYear.Id</td>
+                    <td>@dataYear.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@dataYear.Id" >Удалить</a>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+</div>
+
+
+

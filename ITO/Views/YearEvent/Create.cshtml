@@ -3,6 +3,7 @@
     ViewBag.Title = "Добавление предложения годового плана";
 }
 <h2>Учреждение @Model.Agency.Name</h2>
+
 <form id="forgot_pass_form" name="myForm" asp-action="create" asp-controller="YearEvent" method="post"
       asp-route-AgencyId="@Model.AgencyId" asp-route-Number="@Model.Number">
     <table class="table">
@@ -53,7 +54,7 @@
                 </select>
             </td>
             <td>
-                <select required asp-for="SubSectionId" onchange="SubSectionFilter();" id="subselect" style="width:auto" class="alert-dismissible">
+                <select required asp-for="SubSectionId" onchange="SubSectionFilter();" id="subselect" style="width:auto" class="alert-dismissible">                   
                 </select>
             </td>
             <td>
@@ -78,7 +79,7 @@
     </table>
 </form>
 
-<script>
+<script>   
     function SectionFilter()
     {
         var ArraySelections = new Array();

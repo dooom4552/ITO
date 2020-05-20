@@ -14,7 +14,7 @@ form.addEventListener('submit', (e) => {
         messages.push('Введите значение')
        
     }
-    if (messages.length > 0) {
+    if (messages.length > 0) {        
         alert("Введите значение  по кварталам")
         e.preventDefault()       
     }    

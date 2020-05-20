@@ -19,9 +19,9 @@
             }
             else
             {
-                <form asp-action="DeleteUnit" method="post">
+                <form asp-action="DeleteUnit" asp-route-id="@Model.Id" method="post">
                     <div class="form-group">
-                        <input type="submit" class="btn btn-default" value="Удалить" />
+                        <input type="submit" class="btn btn-danger" value="Удалить" />
                     </div>
                 </form>
             }

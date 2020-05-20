@@ -51,5 +51,91 @@ namespace ITO.Controllers
             }
             return NotFound();
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteUnit(int? id)
+        {
+            if(id != null)
+            {
+                Unit unit = await db.Units.FirstOrDefaultAsync(u => u.Id == id);
+                if(unit != null)
+                {
+                     db.Units.Remove(unit);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateUnit(EditSectionViewModel model)
+        {
+            Unit unit = await db.Units.FirstOrDefaultAsync(u => u.Name == model.Name);
+            
+            if (unit == null)
+            {
+                Unit _unit = new Unit()
+                {
+                    Name=model.Name
+                };
+                db.Units.Add(_unit);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return NotFound();
+        }
+        
+        [HttpGet]
+        [ActionName("DeleteTypeSection")]
+        public async Task<IActionResult> ConfirmDeleteTypeSection(int? id)
+        {
+            if(id != null)
+            {
+                TypeSection typeSection = await db.TypeSections.FirstOrDefaultAsync(u => u.Id == id);
+                if(typeSection != null)
+                {
+                    TypeSectionViewModel model = new TypeSectionViewModel()
+                    {
+                        Id = (int)id,
+                        Name = typeSection.Name,
+                        YearEvents = await db.YearEvents.Where(ye => ye.TypeSection == typeSection.Name).ToListAsync()
+                    };
+                    return View(model);
+
+                }
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteTypeSection(int? id)
+        {
+            if(id != null)
+            {
+                TypeSection typeSection = await db.TypeSections.FirstOrDefaultAsync(u => u.Id == id);
+                if(typeSection != null)
+                {
+                     db.TypeSections.Remove(typeSection);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateTypeSection(EditSectionViewModel model)
+        {
+            TypeSection typeSection = await db.TypeSections.FirstOrDefaultAsync(u => u.Name == model.Name);
+            
+            if (typeSection == null)
+            {
+                TypeSection _typeSection = new TypeSection()
+                {
+                    Name=model.Name
+                };
+                db.TypeSections.Add(_typeSection);
+                await db.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            return NotFound();
+        }
     }
 }

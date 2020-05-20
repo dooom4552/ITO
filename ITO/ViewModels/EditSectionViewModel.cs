@@ -14,5 +14,6 @@ namespace ITO.ViewModels
         public List<SubSection> SubSections { get; set; }//Видео ППК
         public List<SubSection1> SubSection1s { get; set; }//Видео внутр  ТЭОИ
         public List<DataYear> DataYears { get; set; }
+        public string Name { get; set; }
     }
 }

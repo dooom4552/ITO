@@ -24,9 +24,20 @@
 </p>
 <div class="collapse" id="unit">
     <div class="card card-body">
+        <form asp-action="CreateUnit" asp-controller="Section">
+            <div class="form-group">
+                <label class="control-label">Название</label>
+                <input type="text" asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Добавить метры штуки" class="btn btn-default" />
+            </div>
+        </form>
+
         <table class="table">
             <tr>
-                <th>Выберите фильтр</th>
+                <th>Метры штуки</th>
             </tr>
             @foreach(Unit unit in Model.Units)
             {
@@ -46,18 +57,28 @@
 </div>
 <div class="collapse" id="typeSection">
     <div class="card card-body">
+        <form asp-action="CreateTypeSection" asp-controller="Section">
+            <div class="form-group">
+                <label class="control-label">Название</label>
+                <input type="text" asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Добавить тип мероприятия" class="btn btn-default" />
+            </div>
+        </form>
         <table class="table">
             <tr>
-                <th>Выберите фильтр</th>
+                <th>Типы мероприятий</th>
             </tr>
-            @foreach(TypeSection typeSection in Model.TypeSections)
+            @foreach (TypeSection typeSection in Model.TypeSections)
             {
                 <tr>
                     <td>@typeSection.Id</td>
                     <td>@typeSection.Name</td>
                     <td>
                         <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@typeSection.Id" >Удалить</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteTypeSection" asp-route-id="@typeSection.Id">Удалить</a>
                         </form>
                     </td>
                 </tr>
@@ -68,18 +89,29 @@
 </div>
 <div class="collapse" id="section">
     <div class="card card-body">
+        <form asp-action="CreateSection" asp-controller="Section">
+            <div class="form-group">
+                <label class="control-label">Название</label>
+                <input type="text" asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Добавить раздел" class="btn btn-default" />
+            </div>
+        </form>
         <table class="table">
             <tr>
-                <th>Выберите фильтр</th>
+                <th>Разделы</th>
             </tr>
-            @foreach(Section section1 in Model.Sections)
+            @foreach (Section section1 in Model.Sections)
             {
                 <tr>
                     <td>@section1.Id</td>
                     <td>@section1.Name</td>
                     <td>
                         <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@section1.Id" >Удалить</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="CreateSubSection" asp-route-id="@section1.Id">Добавить фильтр</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteSection" asp-route-id="@section1.Id">Удалить</a>
                         </form>
                     </td>
                 </tr>
@@ -92,15 +124,24 @@
     <div class="card card-body">
         <table class="table">
             <tr>
-                <th>Выберите фильтр</th>
+                <th>Фильтры</th>
+            </tr>
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>ID Раздел</th>
             </tr>
             @foreach(SubSection subsection in Model.SubSections)
             {
+
                 <tr>
+                    
                     <td>@subsection.Id</td>
                     <td>@subsection.Name</td>
+                    <td>@subsection.SectionId</td>
                     <td>
                         <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="CreateSubSection1" asp-route-id="@subsection.Id" >Добавить доп фильтр</a>
                             <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection.Id" >Удалить</a>
                         </form>
                     </td>
@@ -114,16 +155,22 @@
     <div class="card card-body">
         <table class="table">
             <tr>
-                <th>Выберите фильтр</th>
+                <th>Доп фильтры</th>
             </tr>
-            @foreach(SubSection1 subsection1 in Model.SubSection1s)
+            <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>ID Фильтра</th>
+            </tr>
+            @foreach (SubSection1 subsection1 in Model.SubSection1s)
             {
                 <tr>
                     <td>@subsection1.Id</td>
                     <td>@subsection1.Name</td>
+                    <td>@subsection1.SubSectionId</td>
                     <td>
                         <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection1.Id" >Удалить</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection1.Id">Удалить</a>
                         </form>
                     </td>
                 </tr>
@@ -134,18 +181,28 @@
 </div>
 <div class="collapse" id="dataYear">
     <div class="card card-body">
+        <form asp-action="CreateDataYear" asp-controller="Section">
+            <div class="form-group">
+                <label class="control-label">Название</label>
+                <input type="text" asp-for="Name" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Добавить год" class="btn btn-default" />
+            </div>
+        </form>
         <table class="table">
             <tr>
-                <th>Выберите фильтр</th>
+                <th>Года</th>
             </tr>
-            @foreach(DataYear dataYear in Model.DataYears)
+            @foreach (DataYear dataYear in Model.DataYears)
             {
                 <tr>
                     <td>@dataYear.Id</td>
                     <td>@dataYear.Name</td>
                     <td>
                         <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@dataYear.Id" >Удалить</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteYear" asp-route-id="@dataYear.Id">Удалить</a>
                         </form>
                     </td>
                 </tr>

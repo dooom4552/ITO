@@ -1,6 +1,6 @@
-﻿@model ITO.ViewModels.Sections.TypeSectionViewModel
+﻿@model ITO.ViewModels.Sections.DataYearViewModel
 @{
-    ViewBag.Title = "Удаление Unit";
+    ViewBag.Title = "Удаление Section";
 }
 <div>
     <dl class="dl-horizontal">
@@ -19,7 +19,7 @@
         }
         else
         {
-            <form asp-action="DeleteTypeSection" asp-route-id="@Model.Id" method="post">
+            <form asp-action="DeleteDataYear" asp-route-id="@Model.Id" method="post">
                 <div class="form-group">
                     <input type="submit" class="btn btn-danger" value="Удалить" />
                 </div>

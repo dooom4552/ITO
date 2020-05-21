@@ -105,16 +105,24 @@
             </tr>
             @foreach (Section section1 in Model.Sections)
             {
-                <tr>
-                    <td>@section1.Id</td>
-                    <td>@section1.Name</td>
-                    <td>
-                        <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="CreateSubSection" asp-route-id="@section1.Id">Добавить фильтр</a>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteSection" asp-route-id="@section1.Id">Удалить</a>
-                        </form>
-                    </td>
-                </tr>
+            <tr>
+            <td>@section1.Id</td>
+            <td>@section1.Name</td>                      
+            <td>
+                <form asp-controller="Section" asp-action="CreateSubSection"
+                      asp-route-id="@section1.Id" method="post" id="sectionForm+@section1.Id">
+                    <input form="sectionForm+@section1.Id" type="text" asp-for="Name" class="form-control" />                    
+                </form>
+            </td>
+            <td>
+                <input form="sectionForm+@section1.Id" type="submit" value="Добавить фильтр" class="btn btn-sm btn-primary" />
+            </td>
+                <td>
+                    <form>
+                        <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteSection" asp-route-id="@section1.Id">Удалить</a>
+                    </form>
+                </td>
+            </tr>
             }
         </table>
 
@@ -134,18 +142,26 @@
             @foreach(SubSection subsection in Model.SubSections)
             {
 
-                <tr>
-                    
-                    <td>@subsection.Id</td>
-                    <td>@subsection.Name</td>
-                    <td>@subsection.SectionId</td>
-                    <td>
-                        <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="CreateSubSection1" asp-route-id="@subsection.Id" >Добавить доп фильтр</a>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection.Id" >Удалить</a>
-                        </form>
-                    </td>
-                </tr>
+        <tr>
+
+            <td>@subsection.Id</td>
+            <td>@subsection.Name</td>
+            <td>@subsection.SectionId</td>
+            <td>
+                <form asp-controller="Section" asp-action="CreateSubSection1"
+                      asp-route-id="@subsection.Id" method="post" id="subsectionForm+@subsection.Id">
+                    <input form="subsectionForm+@subsection.Id" type="text" asp-for="Name" class="form-control" />
+                </form>
+            </td>
+            <td>
+                <input form="subsectionForm+@subsection.Id" type="submit" value="Добавить доп фильтр" class="btn btn-sm btn-primary" />
+            </td>
+            <td>
+                <form>
+                    <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteSubSection" asp-route-id="@subsection.Id">Удалить</a>
+                </form>
+            </td>
+        </tr>
             }
         </table>
 
@@ -170,7 +186,7 @@
                     <td>@subsection1.SubSectionId</td>
                     <td>
                         <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="Delete" asp-route-id="@subsection1.Id">Удалить</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteSubSection1" asp-route-id="@subsection1.Id">Удалить</a>
                         </form>
                     </td>
                 </tr>
@@ -202,7 +218,7 @@
                     <td>@dataYear.Name</td>
                     <td>
                         <form>
-                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteYear" asp-route-id="@dataYear.Id">Удалить</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Section" asp-action="DeleteDataYear" asp-route-id="@dataYear.Id">Удалить</a>
                         </form>
                     </td>
                 </tr>

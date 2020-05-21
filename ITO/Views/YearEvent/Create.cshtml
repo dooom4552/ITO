@@ -54,11 +54,25 @@
                 </select>
             </td>
             <td>
-                <select required asp-for="SubSectionId" onchange="SubSectionFilter();" id="subselect" style="width:auto" class="alert-dismissible">                   
+                <select required asp-for="SubSectionId" onchange="SubSectionFilter();" id="subselect" style="width:auto" class="alert-dismissible">
+                    @foreach (SubSection subSection in Model.SubSections)
+                    {
+                        if (subSection.SectionId == 1)
+                        {
+                            <option value="@subSection.Id">@subSection.Name</option>
+                        }
+                    }
                 </select>
             </td>
             <td>
                 <select required asp-for="SubSection1Id" id="subselect1" style=" width:auto" class="alert-dismissible">
+                    @foreach (SubSection1 subSection1 in Model.SubSection1s)
+                    {
+                        if(subSection1.SubSectionId == 1)
+                        {
+                            <option value="@subSection1.Id">@subSection1.Name</option>
+                        }
+                    }
                 </select>
             </td>
             <td>
@@ -145,7 +159,8 @@
              for (var i = 0; i < ArraySubSelectionsFilter.length; i++)
              {
                  $('#subselect').prepend('<option value="' + ArraySubSelectionsFilter[i].Id + '">' + ArraySubSelectionsFilter[i].Name + '</option>');
-             }
+             };
+             SubSectionFilter();
     });
 
     }

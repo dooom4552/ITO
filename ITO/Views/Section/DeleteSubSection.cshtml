@@ -1,6 +1,6 @@
-﻿@model ITO.ViewModels.Sections.TypeSectionViewModel
+﻿@model ITO.ViewModels.Sections.SubSectionViewModel
 @{
-    ViewBag.Title = "Удаление Unit";
+    ViewBag.Title = "Удаление SubSection";
 }
 <div>
     <dl class="dl-horizontal">
@@ -10,16 +10,16 @@
         </dd>
     </dl>
     <div>
-        @if (Model.YearEvents.Count > 0)
+        @if (Model.YearEvents.Count > 0 || Model.SubSection1s.Count>0)
         {
             <h4>
                 Удалить не возможно <br />
-                есть  предложения годового плана используещие данный фильтр
+                есть  предложения годового плана используещие данный фильтр или доп фильтры данного фильтра
             </h4>
         }
         else
         {
-            <form asp-action="DeleteTypeSection" asp-route-id="@Model.Id" method="post">
+            <form asp-action="DeleteSubSection" asp-route-id="@Model.Id" method="post">
                 <div class="form-group">
                     <input type="submit" class="btn btn-danger" value="Удалить" />
                 </div>
@@ -27,4 +27,3 @@
         }
     </div>
 </div>
-

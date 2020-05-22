@@ -25,25 +25,43 @@ namespace ITO.Controllers.AgencyControllers
 
         [Authorize(Roles = "учреждение")] 
         [HttpGet]
-        public async Task <IActionResult> Index(User userAgency)
+        public async Task <IActionResult> Index(string userName)
         {
-            if (userAgency != null)
+            Agency ag = new Agency();
+            if (userName != null)
             {
-                var userAgencyRoles = await _userManager.GetRolesAsync(userAgency);
-                if (userAgencyRoles.Count > 0)
+                User userAgency = await _userManager.FindByNameAsync(userName);
+                if (userAgency != null)
                 {
-                    foreach (Agency ag in db.Agencies)
+                    var userAgencyRoles = await _userManager.GetRolesAsync(userAgency);
+                    if (userAgencyRoles.Count > 0)
                     {
-                        if (userAgencyRoles.FirstOrDefault(rol => rol == ag.Name) != null)
+                        foreach (Agency agg in db.Agencies)
                         {
-                            List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id).ToListAsync();
-                            return View(yearEvents);
+                            if (userAgencyRoles.FirstOrDefault(rol => rol == agg.Name) != null)
+                            {
+                                ag = agg;
+                            }
                         }
+                        List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id).ToListAsync();                        
+                        int i = yearEvents.Count;
+                        return View(yearEvents);
                     }
                 }
             }
-            //return NotFound();
-            return View();
+            return NotFound();
+
+        }
+
+        [HttpGet]
+        public async Task <IActionResult> Execute(int YearEventId)
+        {
+            YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(ye => ye.Id == YearEventId);
+            if(yearEvent != null)
+            {
+
+            }
+            return RedirectToAction("Index", "Home");
         }
     }
 }

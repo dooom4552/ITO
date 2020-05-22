@@ -16,6 +16,7 @@ namespace ITO.Models
         public float PriceB { get; set; }
         public float PriceNotB { get; set; }
         public DateTime DateTime { get; set; }// время выполнения
-        public int UserconfirmedId { get; set; }// кто подтвердил id  еого кто подтвердил
+        public string UserNameСonfirmed { get; set; }// кто подтвердил  
+        public string UserNameSent { get; set; }// кто отправил
     }
 }

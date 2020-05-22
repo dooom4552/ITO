@@ -6,16 +6,21 @@
 
     @foreach (var item in Model)
     {
-        <tr>
-            <td>@item.EventText</td>
-            <td>@item.Id</td>
-            <td>@item.Number</td>
-
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-            </td>
-        </tr>
+    <tr>
+        <th>Номер</th>
+        <th>Мероприятие</th>
+        <th>Запланировано</th>
+        <th>Ед. изм.</th>
+    </tr>
+    <tr>       
+        <td>@item.Number</td>
+        <td>@item.EventText</td>        
+        <td>@{int x=  item.FirstQuarter + item.SecondQuarter + item.ThirdQuarter + item.FirstQuarter;}@x</td>        
+        <td>@item.Unit</td>        
+        <td>            
+            <a asp-action="Execute" class="btn btn-primary" asp-route-id="@item.Id">Выполнить</a>
+        </td>
+    </tr>
     }
 
 </table>

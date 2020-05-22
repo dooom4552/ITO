@@ -36,6 +36,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Section" asp-action="Index">Фильтры</a>
                             </li>
                         }
+                        @if (User.IsInRole("учреждение"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-route-userAgency="@User" asp-area="" asp-controller="YearPlan" asp-action="Index">Годовой план</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using ITO.Models;
 using ITO.ViewModels;
 using ITO.ViewModels.Sections;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ITO.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class SectionController : Controller
     {
         private readonly AllContext db;

@@ -1,5 +1,6 @@
 ﻿using ITO.Models;
 using ITO.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ITO.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class YearEventController : Controller
     {
         private readonly AllContext db;

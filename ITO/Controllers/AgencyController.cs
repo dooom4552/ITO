@@ -1,5 +1,6 @@
 ﻿using ITO.Models;
 using ITO.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ITO.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AgencyController : Controller
     {        
         private readonly AllContext db;

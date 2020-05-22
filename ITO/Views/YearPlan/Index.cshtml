@@ -1,0 +1,22 @@
+﻿@model IEnumerable<ITO.Models.YearEvent>
+@{
+    ViewData["Title"] = "Годовой план";
+}
+<table class="table">
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.EventText</td>
+            <td>@item.Id</td>
+            <td>@item.Number</td>
+
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Подробнее</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+    }
+
+</table>
+

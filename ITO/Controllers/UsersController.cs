@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ITO.Controllers
 {
-    //[Authorize(Roles = "admin")]
+    [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
         readonly UserManager<User> _userManager;

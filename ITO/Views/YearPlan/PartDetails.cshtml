@@ -1,0 +1,24 @@
+﻿@model ITO.ViewModels.AgencyUser.PartYearEventDetailsViewModel
+
+<h1>Учреждение: @Model.Agency</h1>
+<h2>Год: @Model.DataYear</h2>
+<h4>Пункт№: @Model.NumberYearEvent</h4>
+<h4>Текст: @Model.EventText</h4>
+<h4>Сколько всего запланировано: @Model.FullDonePlan</h4>
+
+<h4>Выполнено за данный отчет: @Model.Done</h4>
+<h4>Затрачено бюджетных средств: @Model.PriceB</h4>
+<h4>Затрачено внебюджетных средств: @Model.PriceNotB</h4>
+
+<h4>Дата выполнения: @Model.DateTime</h4>
+<h4>Кто подтвердил: @Model.UserNameСonfirmed</h4>
+<h4>Кто отчитался: @Model.UserNameSent</h4>
+
+
+<div class="col-lg-10">
+    <img class="img-fluid img-thumbnail" src="@Model.Img" alt="@Model.Done" />
+    <iframe class="img-fluid img-thumbnail" src="@Model.Pdf" alt="@Model.Done" />
+</div>
+
+<div class="col-lg-10">  
+</div>

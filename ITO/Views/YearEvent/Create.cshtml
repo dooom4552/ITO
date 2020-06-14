@@ -5,7 +5,7 @@
 <h2>Учреждение @Model.Agency.Name</h2>
 
 <form id="forgot_pass_form" name="myForm" asp-action="create" asp-controller="YearEvent" method="post"
-      asp-route-AgencyId="@Model.AgencyId" asp-route-Number="@Model.Number">
+      asp-route-AgencyId="@Model.AgencyId" asp-route-Number="@Model.Number" asp-route-DataYear="@Model.DataYear">
     <table class="table">
         <tr>
             <th colspan="5">Текст мероприятия</th>
@@ -87,7 +87,7 @@
         <tr>
             <td colspan="6" class="table">
 
-                <input type="submit" value="Добавить" class="btn btn-secondary btn-lg btn-block" />
+                <input id="btnCreate" data-content="fuck" type="submit" value="Добавить" class="btn btn-secondary btn-lg btn-block" />
             </td>
         </tr>
     </table>

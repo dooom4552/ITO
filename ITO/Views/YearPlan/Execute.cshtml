@@ -1,0 +1,74 @@
+﻿@model ITO.ViewModels.AgencyUser.PartYearEventViewModel
+
+@{
+    ViewData["Title"] = "Execute";
+}
+<form id="executeForm" asp-action="Execute" enctype="multipart/form-data" asp-route-YearEventId="@Model.YearEventId"
+      asp-route-NumberYearEvent="@Model.NumberYearEvent" asp-route-DataYear="@Model.DataYear">
+</form>
+
+<h1>Пункт № @Model.NumberYearEvent</h1>
+
+<h4>@Model.EventText</h4>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label form="executeForm" asp-for="Done" class="control-label">Сколько выполнено, но не более @Model.maxDone</label>
+                <input form="executeForm" required min="1" max="@Model.maxDone" asp-for="Done" class="form-control" />
+                <span asp-validation-for="Done" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label form="executeForm" asp-for="PriceB" class="control-label">Сколько затрачено бюджетных сребств</label>
+                <input form="executeForm" asp-for="PriceB" class="form-control" />
+                <span asp-validation-for="PriceB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label form="executeForm" asp-for="PriceNotB" class="control-label">Сколько затрачено средств из иных источников</label>
+                <input form="executeForm" asp-for="PriceNotB" class="form-control" />
+                <span asp-validation-for="PriceNotB" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">                  
+                <div class="upload-file-container-pdf  col-lg-10">
+                    <div class="upload-file-container-text">
+                        <label>Вставьте отчет</label>
+                        <input form="executeForm" required asp-for="PdfFile" accept="application/pdf" type="file" class="" id="pdfInput" />
+                        <span asp-validation-for="PdfFile" class="text-danger"></span>
+                    </div>
+                    <iframe hidden height="300" width="1115" id="pdf" ></iframe>
+                </div>
+            
+       
+    </div>
+    <div class="row">
+
+            <div class="upload-file-container col-lg-12">
+                <div class="upload-file-container-text">
+                    <label>Вставьте изображение</label>
+                    <input form="executeForm" required asp-for="ImageFile" accept="image/*" type="file" class="photo" id="imgInput" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+                <img class="img-fluid img-thumbnail" id="image" src="#" alt="" />
+            </div>        
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <input form="executeForm" type="submit" value="Добавить" class="btn btn-primary btn-lg btn-block" />
+        </div>
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+

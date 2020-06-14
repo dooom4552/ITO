@@ -1,27 +1,39 @@
-﻿@model IEnumerable<ITO.Models.YearEvent>
+﻿@model IEnumerable<ITO.ViewModels.AgencyUser.YearEventViewModel>
 @{
     ViewData["Title"] = "Годовой план";
-}
-<table class="table">
 
-    @foreach (var item in Model)
+    decimal fullProcent = 0;
+
+    float fullPriceBnow = 0;
+
+    float fullPriceNotBnow = 0;
+
+
+    foreach (var yearEvent in Model)
     {
-    <tr>
-        <th>Номер</th>
-        <th>Мероприятие</th>
-        <th>Запланировано</th>
-        <th>Ед. изм.</th>
-    </tr>
-    <tr>       
-        <td>@item.Number</td>
-        <td>@item.EventText</td>        
-        <td>@{int x=  item.FirstQuarter + item.SecondQuarter + item.ThirdQuarter + item.FirstQuarter;}@x</td>        
-        <td>@item.Unit</td>        
-        <td>            
-            <a asp-action="Execute" class="btn btn-primary" asp-route-id="@item.Id">Выполнить</a>
-        </td>
-    </tr>
+        fullProcent += yearEvent.Procent;
+        fullPriceBnow += yearEvent.FullPriceBnow;
+        fullPriceNotBnow += yearEvent.FullPriceNotBnow;
     }
+    fullProcent = fullProcent*100 / Model.Count();
 
-</table>
+    float fullPrice = fullPriceBnow + fullPriceNotBnow;
+}
+
+
+
+   <h1>Годовой план выполнен на @Math.Round(fullProcent,2) %</h1>
+<h2>Затрачено бюджетных средств @fullPriceBnow руб.</h2>
+<h2>Затрачено внебюджетных средств @fullPriceNotBnow руб.</h2>
+<h2>Затрачено внебюджетных средств @fullPrice руб.</h2>
+
+@foreach (var item in Model)
+{
+
+    @Html.Partial("PartialYearEvent", item);
+
+}
+
+
+
 

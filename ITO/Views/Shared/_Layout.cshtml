@@ -6,12 +6,19 @@
         <title>@ViewData["Title"] - ITO</title>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/FileLoad.css" />
 
     </head>
     <body>
+        <form method="post" id="AgencyUserForm" asp-area="" asp-controller="YearPlan" asp-action="Index" 
+              asp-route-userName="@User.Identity.Name">
+        </form> 
+        <form method="post" id="GovernmentForm" asp-area="" asp-controller="Government" asp-action="Index" 
+              asp-route-userName="@User.Identity.Name">
+        </form>
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-                <div class="container">
+                <div class="container-fluid">
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ITO</a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
@@ -41,17 +48,23 @@
 
                             @if (User.IsInRole("учреждение"))
                             {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="YearPlan" asp-action="Index" asp-route-userName="@User.Identity.Name" >Годовой план</a>
+                                </li>
+                            }
 
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-route-userName="@User.Identity.Name" asp-area="" asp-controller="YearPlan" asp-action="Index">Годовой план</a>
-                            </li>
+                            @if (User.IsInRole("управление"))
+                            {
+                                <li class="nav-item">                                   
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Government" asp-action="Index" asp-route-userName="@User.Identity.Name" >Годовой план</a>
+                                </li>
                             }
                         </ul>
                     </div>
                 </div>
             </nav>
         </header>
-        <div class="container">
+        <div class="container-fluid">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
@@ -66,6 +79,7 @@
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/LoadScript.js" asp-append-version="true"></script>
 
         @RenderSection("Scripts", required: false)
     </body>

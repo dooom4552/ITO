@@ -1,0 +1,78 @@
+﻿@model ITO.ViewModels.AgencyUser.PartYearEventViewModel
+
+@{
+    ViewData["Title"] = "Изменить";
+}
+<form id="returnForm" asp-action="Return" enctype="multipart/form-data" asp-route-Id="@Model.Id" method="post">
+</form>
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label form="returnForm" class="control-label">Пункт №: @Model.NumberYearEvent</label>
+            </div>
+            
+            <div class="form-group">
+                <label form="returnForm" class="control-label">Дата выполнения: @Model.DateTime</label>
+            </div>
+            <div class="form-group">
+                <label form="returnForm" class="control-label">Кто отчитался: @Model.UserNameSent</label>
+            </div>
+            
+            <div class="form-group">
+                <label form="returnForm" class="control-label">Кто вернул: @Model.UserNameСonfirmed</label>
+            </div>
+            <div class="form-group">
+                <label form="returnForm" class="control-label">Причина: @Model.Сomment</label>
+            </div>
+
+            <div class="form-group">
+                <label form="returnForm" asp-for="Done" class="control-label">Сколько выполнено, но не более @Model.maxDone</label>
+                <input form="returnForm" required min="1" max="@Model.maxDone" asp-for="Done" class="form-control" />
+                <span asp-validation-for="Done" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label form="returnForm" asp-for="PriceB" class="control-label">Сколько затрачено бюджетных сребств</label>
+                <input form="returnForm" asp-for="PriceB" class="form-control" />
+                <span asp-validation-for="PriceB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label form="returnForm" asp-for="PriceNotB" class="control-label">Сколько затрачено средств из иных источников</label>
+                <input form="returnForm" asp-for="PriceNotB" class="form-control" />
+                <span asp-validation-for="PriceNotB" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="upload-file-container-pdf  col-lg-10">
+            <div class="upload-file-container-text">
+                <label>Вставьте отчет</label>
+                <input form="returnForm" required asp-for="PdfFile" accept="application/pdf" type="file" class="" id="pdfInput" />
+                <span asp-validation-for="PdfFile" class="text-danger"></span>
+            </div>
+            <iframe src="@Model.Pdf" height="300" width="1115" id="pdf"></iframe>
+        </div>
+
+
+    </div>
+    <div class="row">
+
+        <div class="upload-file-container col-lg-12">
+            <div class="upload-file-container-text">
+                <label>Вставьте изображение</label>
+                <input form="returnForm" required asp-for="ImageFile" accept="image/*" type="file" class="photo" id="imgInput" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <img src="@Model.Img" class="img-fluid img-thumbnail" id="image"  alt="" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <input form="returnForm" type="submit" value="Добавить" class="btn btn-primary btn-lg btn-block" />
+        </div>
+
+    </div>
+</div>

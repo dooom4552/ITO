@@ -4,6 +4,8 @@ const thirdQuarter = document.getElementById('ThirdQuarter')
 const fourthQuarter = document.getElementById('FourthQuarter')
 const form = document.getElementById('forgot_pass_form')
 const errorElement = document.getElementById('error')
+const btnCreate = document.getElementById('btnCreate')
+
 
 form.addEventListener('submit', (e) => {   
     let sum = firstQuarter.value + secondQuarter.value + thirdQuarter.value + fourthQuarter.value;
@@ -14,7 +16,8 @@ form.addEventListener('submit', (e) => {
         messages.push('Введите значение')
        
     }
-    if (messages.length > 0) {        
+    if (messages.length > 0) { 
+        btnCreate.dataset.content = "hjghgj";
         alert("Введите значение  по кварталам")
         e.preventDefault()       
     }    

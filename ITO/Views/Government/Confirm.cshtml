@@ -1,0 +1,31 @@
+﻿@model ITO.Models.PartYearEvent
+
+
+<h3>Номер:   <span class="badge badge-secondary">@Model.NumberYearEvent</span></h3>
+<h3>Выполнено:   <span class="badge badge-secondary">@Model.Done</span></h3>
+<h3>Затрачено бюджетных средств:   <span class="badge badge-secondary">@Model.PriceB</span></h3>
+<h3>Затрачено внебюджетных средств:   <span class="badge badge-secondary">@Model.PriceNotB</span></h3>
+<h3>Дата выполнения:   <span class="badge badge-secondary">@Model.DateTime</span></h3>
+<h3>Кто отчитался:   <span class="badge badge-secondary">@Model.UserNameSent</span></h3>
+
+<div class="row form-group">
+    <form asp-action="Confirm" asp-route-id="@Model.Id" method="post">
+        <input type="submit" value="Принять" class="btn btn-success" />
+    </form>
+    <form asp-action="NotConfirm" asp-route-id="@Model.Id" method="post">    
+        <textarea placeholder="введите комментарий" required type="text" asp-for="Сomment" class="form-control"></textarea>
+        <input type="submit" value="Вернуть на доработку" class="btn btn-danger" />
+    </form>
+</div>
+
+<div class="col-lg-10">
+    <img class="img-fluid img-thumbnail" src="@Model.Img" alt="@Model.Done" />
+    <iframe class="img-fluid img-thumbnail"  src="@Model.Pdf" alt="@Model.Done" />
+</div>
+
+
+
+
+
+
+

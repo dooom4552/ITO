@@ -10,6 +10,8 @@ namespace ITO
         {
             string adminEmail = "Admin@";
             string password = "Trader25@";
+            string governmentEmail = "Government@";
+            string governmentPassword = "Trader24@";
             if (await roleManager.FindByNameAsync("admin") == null)
             {
                 await roleManager.CreateAsync(new IdentityRole("admin"));
@@ -18,6 +20,14 @@ namespace ITO
             {
                 await roleManager.CreateAsync(new IdentityRole("user"));
             }
+            if (await roleManager.FindByNameAsync("учреждение") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("учреждение"));
+            } 
+            if (await roleManager.FindByNameAsync("управление") == null)
+            {
+                await roleManager.CreateAsync(new IdentityRole("управление"));
+            }
             if (await userManager.FindByNameAsync(adminEmail) == null)
             {
                 User admin = new User { Email = adminEmail, UserName = adminEmail };
@@ -25,6 +35,16 @@ namespace ITO
                 if (result.Succeeded)
                 {                  
                     await userManager.AddToRoleAsync(admin, "admin");
+                }
+            }
+            
+            if (await userManager.FindByNameAsync(governmentEmail) == null)
+            {
+                User government = new User { Email = governmentEmail, UserName = governmentEmail };
+                IdentityResult result = await userManager.CreateAsync(government, governmentPassword);
+                if (result.Succeeded)
+                {                  
+                    await userManager.AddToRoleAsync(government, "управление");
                 }
             }
         }

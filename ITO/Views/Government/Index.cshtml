@@ -1,0 +1,12 @@
+﻿@model IEnumerable<ITO.ViewModels.GovernmentUser.ListAgencyViewModel>
+@{
+    ViewData["Title"] = "Годовой план";
+}
+
+@foreach (var agency in Model)
+{
+
+    @Html.Partial("PartialAgency", agency);
+
+}
+

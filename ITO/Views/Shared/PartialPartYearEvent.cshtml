@@ -1,0 +1,50 @@
+﻿@model ITO.Models.PartYearEvent
+@{ 
+    string x = Model.NumberYearEvent.ToString()+Model.YearEventId.ToString();
+    string idd = "collapseExample" + x;
+}
+    <div class="collapse col-lg-2" id="@idd">
+        <img class="img-fluid img-thumbnail" src="@Model.Img" alt="@Model.Done" />
+        <p>Дата: @Model.DateTime</p>
+        <p>Выполнено: @Model.Done</p>
+        <p>Бюджет: @Model.PriceB.ToString("c")</p>
+        <p>Внебюджет: @Model.PriceNotB.ToString("c")</p>
+        <a href="@Model.Pdf" target="_blank">Отчет</a>
+
+        @if (!User.IsInRole("управление"))//если учреждение
+        {
+            @if (Model.UserNameСonfirmed != null && Model.Сomment == null)//если отчет согласован
+            {
+                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
+                    <input type="submit" value="Подробнее" class="btn btn-success" />
+                </form>
+            }
+            if (Model.UserNameСonfirmed == null && Model.Сomment == null)//если отчет пока не согласован
+            {
+                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="Return" method="get">
+                    <input type="submit" value="Вернуть" class="btn btn-primary" />
+                </form>
+            }
+            if (Model.UserNameСonfirmed != null && Model.Сomment != null)//если отчет вернули на доработку
+            {
+                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="Return" method="get">
+                    <input type="submit" value="Изменить" class="btn btn-primary" />
+                </form>
+            }
+        }
+        else//если управление
+        {
+            @if (Model.UserNameСonfirmed != null)//если отчет согласован
+            {
+                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
+                    <input type="submit" value="Подробнее" class="btn btn-outline-primary" />
+                </form>
+            }
+            else//если отчет не согласован
+            {
+                <form asp-route-Id="@Model.Id" asp-controller="Government" asp-action="Confirm" method="get">
+                    <input type="submit" value="Просмотреть" class="btn btn-warning" />
+                </form>
+            }
+        }
+    </div>

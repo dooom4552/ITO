@@ -1,0 +1,16 @@
+﻿@model ITO.ViewModels.GovernmentUser.ListAgencyViewModel
+
+<h3>Учреждение:   <span class="badge badge-secondary">@Model.Name</span></h3>
+<h3>Всего запланировано <span class="badge badge-secondary">@Model.YearEventViewModels.Count</span></h3>
+<h3>Всего выполнено <span class="badge badge-secondary">@Model.YearEventViewModels.Count</span></h3>
+<h3>Процент выполнения <span class="badge badge-secondary">@Model.YearEventViewModels.Count%</span></h3>
+<h3>Затрачено бюждетных средств <span class="badge badge-secondary">@Model.YearEventViewModels.Count руб.</span></h3>
+<h3>Затрачено внебюждетных средств <span class="badge badge-secondary">@Model.YearEventViewModels.Count руб.</span></h3>
+<h3>Затрачено всего средств <span class="badge badge-secondary">@Model.YearEventViewModels.Count руб.</span></h3>
+
+<div class="row mt-lg-5 mb-lg-5"> 
+    @foreach (var yearEventViewModel in Model.YearEventViewModels)
+    {
+        @Html.Partial("PartialYearEvent", yearEventViewModel);
+    }
+</div>

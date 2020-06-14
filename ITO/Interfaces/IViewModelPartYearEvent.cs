@@ -1,14 +1,12 @@
-﻿using ITO.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ITO.Models
+namespace ITO.Interfaces
 {
-    public class PartYearEvent 
+    interface IViewModelPartYearEvent
     {
-        public int Id { get; set; }
         public int YearEventId { get; set; }
         public int NumberYearEvent { get; set; }// порядковый номер в год плане
         public int Done { get; set; }// сколько сделано

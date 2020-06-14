@@ -1,0 +1,41 @@
+﻿@model ITO.ViewModels.AgencyUser.YearEventViewModel
+@{
+    string x = Model.Number + Model.Id.ToString();
+    string idd = "collapseExample" + x;
+    string href = "#" + idd;
+}
+<div class="row mt-5 mb-2">
+    <table class="table">
+        <tr>
+            <th>Номер</th>
+            <th>Мероприятие</th>
+            <th>1 кв</th>
+            <th>2 кв</th>
+            <th>3 кв</th>
+            <th>4 кв</th>
+            <th>Всего запланировано</th>
+            <th>Ед. изм.</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Model.Number</td>
+            <td>@Model.EventText</td>
+            <td>@Model.FirstQuarter</td>
+            <td>@Model.SecondQuarter</td>
+            <td>@Model.ThirdQuarter</td>
+            <td>@Model.FourthQuarter</td>
+            <td>@{int y = Model.FirstQuarter + Model.SecondQuarter + Model.ThirdQuarter + Model.FourthQuarter;}@y</td>
+            <td>@Model.Unit</td>
+            <td>
+                <a class="btn btn-secondary" data-toggle="collapse" href="@href" role="button" aria-expanded="false" aria-controls="@idd">Отчеты</a>
+            </td>
+        </tr>
+    </table>
+    @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
+    {
+        if (partYearEvent.UserNameСonfirmed == null)
+        {
+            @Html.Partial("PartialPartYearEvent", partYearEvent);
+        }
+    }
+</div>

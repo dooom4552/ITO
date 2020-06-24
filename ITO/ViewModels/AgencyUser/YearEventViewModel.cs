@@ -28,5 +28,7 @@ namespace ITO.ViewModels.AgencyUser
         public float FullPriceNotBnow { get; set; }
 
         public bool NumberPartReturnsandSent { get; set; }
+        public List<DataYear> DataYears { get; set; }
+
     }
 }

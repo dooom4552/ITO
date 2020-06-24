@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using ITO.ViewModels.AgencyUser;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
-using ITO.Interfaces;
 
 namespace ITO.Controllers.AgencyControllers
 {
@@ -55,7 +54,7 @@ namespace ITO.Controllers.AgencyControllers
                             List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id).ToListAsync();
                             List<YearEventViewModel> yearEventsViewModel = new List<YearEventViewModel>();
                             foreach (YearEvent yearEvent in yearEvents)
-                            {               
+                            {
                                 yearEventsViewModel.Add(new YearEventViewModel()
                                 {
                                     Id = yearEvent.Id,
@@ -76,7 +75,7 @@ namespace ITO.Controllers.AgencyControllers
                                     Procent = await GetProcentYearEvent(yearEvent.Id),
                                     FullPriceBnow = await GetFullPriceBNow(yearEvent.Id),
                                     FullPriceNotBnow = await GetFullPriceNotBNow(yearEvent.Id),
-                                    NumberPartReturnsandSent =await GetNumberPartReturnsAndSent(yearEvent.Id)
+                                    NumberPartReturnsandSent = await GetNumberPartReturnsAndSent(yearEvent.Id)
                                 });
                             }
                             return View(yearEventsViewModel);
@@ -89,7 +88,7 @@ namespace ITO.Controllers.AgencyControllers
 
         [HttpGet]
         public async Task<IActionResult> Execute(int YearEventId)
-        {     
+        {
             YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(ye => ye.Id == YearEventId);
             if (yearEvent != null)
             {
@@ -97,10 +96,10 @@ namespace ITO.Controllers.AgencyControllers
                 int maxDone = 0;
                 List<PartYearEvent> partYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == YearEventId).ToListAsync();
 
-                int numberPartReturns =  partYearEvents.Where(p => p.UserNameСonfirmed != null && p.Сomment != null).Count();// количество отчетов которые вернули на доработку
+                int numberPartReturns = partYearEvents.Where(p => p.UserNameСonfirmed != null && p.Сomment != null).Count();// количество отчетов которые вернули на доработку
                 int numberPartSent = partYearEvents.Where(p => p.UserNameСonfirmed == null && p.UserNameSent != null).Count();// количество отчетов еще на рассмотрении
 
-                if((numberPartReturns + numberPartSent) == 0)
+                if ((numberPartReturns + numberPartSent) == 0)
                 {
 
                     if (partYearEvents != null)
@@ -122,11 +121,11 @@ namespace ITO.Controllers.AgencyControllers
                         FourthQuarter = yearEvent.FourthQuarter,
                         Unit = yearEvent.Unit,
                         DataYear = yearEvent.DataYear,
-                        maxDone = maxDone                        
+                        maxDone = maxDone
                     };
                     return View(partYearEventViewModel);
                 }
-               
+
             }
             return RedirectToAction("Index", "Home");
         }
@@ -140,29 +139,31 @@ namespace ITO.Controllers.AgencyControllers
                 Agency agency = await db.Agencies.FirstOrDefaultAsync(ag => ag.Id == yearEvent.AgencyId);
 
                 // путь к папке Files
-                string path = _appEnvironment.WebRootPath + "\\img\\";
-                string pathWWWRootNot = "\\img\\";
+                string path = Path.Combine(_appEnvironment.WebRootPath, "img");
+                //string pathWWWRootNot = "\\img\\";
 
-                if (!Directory.Exists(path + agency.Name))
+                if (!Directory.Exists(Path.Combine(path, agency.Name)))
                 {
-                    Directory.CreateDirectory(path + agency.Name);
+                    Directory.CreateDirectory(Path.Combine(path, agency.Name));
                 }
-                path += agency.Name;
-                pathWWWRootNot += agency.Name;
 
-                if (!Directory.Exists(path + "\\" + partYearEventViewModel.DataYear))
-                {
-                    Directory.CreateDirectory(path + "\\" + partYearEventViewModel.DataYear);
-                }
-                path += "\\" + partYearEventViewModel.DataYear;
-                pathWWWRootNot += "\\" + partYearEventViewModel.DataYear;
+                path = Path.Combine(path, agency.Name);
+                string pathWWWRootNot = Path.Combine("img", agency.Name);
 
-                if (!Directory.Exists(path + "\\" + partYearEventViewModel.NumberYearEvent))
+                if (!Directory.Exists(Path.Combine(path, partYearEventViewModel.DataYear)))
                 {
-                    Directory.CreateDirectory(path + "\\" + partYearEventViewModel.NumberYearEvent);
+                    Directory.CreateDirectory(Path.Combine(path, partYearEventViewModel.DataYear));
                 }
-                path += "\\" + partYearEventViewModel.NumberYearEvent;
-                pathWWWRootNot += "\\" + partYearEventViewModel.NumberYearEvent;
+                path = Path.Combine(path, partYearEventViewModel.DataYear);
+                pathWWWRootNot = Path.Combine(pathWWWRootNot, partYearEventViewModel.DataYear);
+
+                if (!Directory.Exists(Path.Combine(path, partYearEventViewModel.NumberYearEvent.ToString())))
+                {
+                    Directory.CreateDirectory(Path.Combine(path, partYearEventViewModel.NumberYearEvent.ToString()));
+                }
+
+                path = Path.Combine(path, partYearEventViewModel.NumberYearEvent.ToString());
+                pathWWWRootNot = Path.Combine(pathWWWRootNot, partYearEventViewModel.NumberYearEvent.ToString());
 
                 string fullFileNameImageFile;
                 string fullFileNamePdfFile;
@@ -170,21 +171,21 @@ namespace ITO.Controllers.AgencyControllers
                 string extensionImageFile = Path.GetExtension(partYearEventViewModel.ImageFile.FileName);
                 string extensionPdfFile = Path.GetExtension(partYearEventViewModel.PdfFile.FileName);
 
-                string fileNameImageFile = "ГД" + " " + "image" + " " + agency.Name + " " + partYearEventViewModel.NumberYearEvent + " " + DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss") + extensionImageFile;
-                string fileNamePdfFile = "ГД" + " " + "pdf" + agency.Name + " " + partYearEventViewModel.NumberYearEvent + " " + DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss") + extensionPdfFile;
+                string fileNameImageFile = $"ГП_image_{agency.Name}_{partYearEventViewModel.NumberYearEvent}_{DateTime.Now:dd-MM-yyyy-hh-mm-ss}{extensionImageFile}";
+                string fileNamePdfFile = $"ГП_pdf_{agency.Name}_{partYearEventViewModel.NumberYearEvent}_{DateTime.Now:dd-MM-yyyy-hh-mm-ss}{extensionPdfFile}";
 
-                using (var fileStream = new FileStream(path + "\\" + fileNameImageFile, FileMode.Create))
+                using (var fileStream = new FileStream(Path.Combine(path, fileNameImageFile), FileMode.Create))
                 {
                     await partYearEventViewModel.ImageFile.CopyToAsync(fileStream);
                     await fileStream.FlushAsync();
-                    fullFileNameImageFile = pathWWWRootNot + "\\" + fileNameImageFile;
+                    fullFileNameImageFile = "\\" + Path.Combine(pathWWWRootNot, fileNameImageFile);
                 }
 
-                using (var fileStream = new FileStream(path + "\\" + fileNamePdfFile, FileMode.Create))
+                using (var fileStream = new FileStream(Path.Combine(path, fileNamePdfFile), FileMode.Create))
                 {
                     await partYearEventViewModel.PdfFile.CopyToAsync(fileStream);
                     await fileStream.FlushAsync();
-                    fullFileNamePdfFile = pathWWWRootNot + "\\" + fileNamePdfFile;
+                    fullFileNamePdfFile = "\\" + Path.Combine(pathWWWRootNot, fileNamePdfFile);
                 }
 
                 PartYearEvent partYearEvent = new PartYearEvent()
@@ -202,7 +203,7 @@ namespace ITO.Controllers.AgencyControllers
                 await db.PartYearEvents.AddAsync(partYearEvent);
                 await db.SaveChangesAsync();
             }
-            return RedirectToAction("Index", new {userName = User.Identity.Name });  
+            return RedirectToAction("Index", new { userName = User.Identity.Name });
         }
 
 
@@ -238,10 +239,10 @@ namespace ITO.Controllers.AgencyControllers
 
         [HttpGet]
         public async Task<IActionResult> Return(int? Id)
-        {        
-            if(Id != null)
+        {
+            if (Id != null)
             {
-                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == Id);        
+                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == Id);
                 if (partYearEvent != null)
                 {
                     if (await Success(partYearEvent))
@@ -260,7 +261,7 @@ namespace ITO.Controllers.AgencyControllers
                             UserNameСonfirmed = partYearEvent.UserNameСonfirmed,
                             UserNameSent = partYearEvent.UserNameSent,
                             Сomment = partYearEvent.Сomment,
-                            maxDone =await GetMaxDone(partYearEvent.Id)
+                            maxDone = await GetMaxDone(partYearEvent.Id)
                         };
 
                         return View(partYearEventViewModel);
@@ -273,11 +274,11 @@ namespace ITO.Controllers.AgencyControllers
 
         public async Task<IActionResult> Return(PartYearEventViewModel partYearEventViewModel)
         {
-            if(partYearEventViewModel != null)
+            if (partYearEventViewModel != null)
             {
                 PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == partYearEventViewModel.Id);
                 {
-                    if(partYearEvent != null)
+                    if (partYearEvent != null)
                     {
                         string path = _appEnvironment.WebRootPath;
                         if (partYearEventViewModel.Done != 0)
@@ -287,7 +288,7 @@ namespace ITO.Controllers.AgencyControllers
 
                         if (partYearEventViewModel.PdfFile != null)
                         {
-                            using (var fileStream = new FileStream(path+partYearEvent.Pdf, FileMode.Create))
+                            using (var fileStream = new FileStream(path + partYearEvent.Pdf, FileMode.Create))
                             {
                                 await partYearEventViewModel.PdfFile.CopyToAsync(fileStream);
                                 await fileStream.FlushAsync();
@@ -296,7 +297,7 @@ namespace ITO.Controllers.AgencyControllers
 
                         if (partYearEventViewModel.ImageFile != null)
                         {
-                            using(var fileStream = new FileStream(path+partYearEvent.Img, FileMode.Create))
+                            using (var fileStream = new FileStream(path + partYearEvent.Img, FileMode.Create))
                             {
                                 await partYearEventViewModel.ImageFile.CopyToAsync(fileStream);
                                 await fileStream.FlushAsync();
@@ -312,9 +313,26 @@ namespace ITO.Controllers.AgencyControllers
             return RedirectToAction("Index", "Home");
         }
 
-
-
-        public  async Task<bool> Success(PartYearEvent partYearEvent)
+        [HttpPost]
+        public async Task<IActionResult> Delete(PartYearEventViewModel partYearEventViewModel)
+        {
+            if (partYearEventViewModel != null)
+            {
+                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == partYearEventViewModel.Id);
+                if (partYearEvent != null)
+                {
+                    db.PartYearEvents.Remove(partYearEvent);
+                    await db.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
+        /// <summary>
+        /// Проверяет принадлежит ли данный отчет авторезированому в данный момент пользователю
+        /// </summary>
+        ///<param name="partYearEvent">отчет годового плана</param>
+        /// <returns></returns>
+        public async Task<bool> Success(PartYearEvent partYearEvent)
         {
             YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == partYearEvent.YearEventId);//получаем год план
 
@@ -330,10 +348,15 @@ namespace ITO.Controllers.AgencyControllers
                 {
                     return true;
                 }
-            }              
+            }
             return false;
         }
 
+        /// <summary>
+        /// Возвращает процент выполнения годового плана по id пункта годового плана
+        /// </summary>
+        /// <param name="idYearEvent">id годового плана</param>
+        /// <returns></returns>
         public async Task<decimal> GetProcentYearEvent(int idYearEvent)
         {
             YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == idYearEvent);
@@ -342,7 +365,7 @@ namespace ITO.Controllers.AgencyControllers
 
             decimal fullDonePlan = yearEvent.FirstQuarter + yearEvent.SecondQuarter + yearEvent.ThirdQuarter + yearEvent.FourthQuarter;
             decimal fullDoneNaw = 0;
-            foreach(var part in partYearEvents)
+            foreach (var part in partYearEvents)
             {
                 fullDoneNaw += part.Done;
             }
@@ -350,6 +373,11 @@ namespace ITO.Controllers.AgencyControllers
             return procent;
         }
 
+        /// <summary>
+        /// Возвращает количество затраченных бюджетных средств на выполнения данного пункта годового плана
+        /// </summary>
+        /// <param name="idYearEvent">id пункта годового плана</param>
+        /// <returns></returns>
         public async Task<float> GetFullPriceBNow(int idYearEvent)
         {
             YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == idYearEvent);
@@ -364,7 +392,12 @@ namespace ITO.Controllers.AgencyControllers
             }
             return FullPriceBnow;
         }
-        
+
+        /// <summary>
+        /// Возвращает количество затраченных внебюджетных средств на выполнения данного пункта годового плана
+        /// </summary>
+        /// <param name="idYearEvent">id пункта годового плана</param>
+        /// <returns></returns>
         public async Task<float> GetFullPriceNotBNow(int idYearEvent)
         {
             YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == idYearEvent);
@@ -380,9 +413,14 @@ namespace ITO.Controllers.AgencyControllers
             return FullPriceNotBnow;
         }
 
+        /// <summary>
+        /// Возвращает количество необходимое для полного завершения данного пункта годового плана по id отчета
+        /// </summary>
+        /// <param name="idPartYearEvent">id отчета годового плана</param>
+        /// <returns></returns>
         public async Task<int> GetMaxDone(int? idPartYearEvent)
         {
-            if(idPartYearEvent != null)
+            if (idPartYearEvent != null)
             {
                 PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == idPartYearEvent);
                 YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == partYearEvent.YearEventId);
@@ -391,15 +429,20 @@ namespace ITO.Controllers.AgencyControllers
                 List<PartYearEvent> partYearEventsСonfirmed = await db.PartYearEvents
                     .Where(p => p.YearEventId == partYearEvent.YearEventId && p.Сomment == null && p.UserNameСonfirmed != null).ToListAsync();
                 int fullDoneNaw = 0;
-                foreach(var part in partYearEventsСonfirmed)
+                foreach (var part in partYearEventsСonfirmed)
                 {
                     fullDoneNaw += part.Done;
                 }
-                return fullDonePlan-fullDoneNaw;
+                return fullDonePlan - fullDoneNaw;
             }
             return 0;
         }
 
+        /// <summary>
+        /// Проверяет есть ли по данному пункту годового плана еще не рассмотренные отчеты и отправленные на доработку, проверка нужна для отоброжения кнопки ВЫПОЛНИТЬ, если есть отчеты отправленные на доработку или еще не рассмотренные то выполнить нельзя
+        /// </summary>
+        /// <param name="YearEventId">id пункта годового плана</param>
+        /// <returns></returns>
         public async Task<bool> GetNumberPartReturnsAndSent(int? YearEventId)
         {
             if (YearEventId != null)
@@ -411,7 +454,7 @@ namespace ITO.Controllers.AgencyControllers
                     int numberPartReturns = partYearEvents.Where(p => p.UserNameСonfirmed != null && p.Сomment != null).Count();// количество отчетов которые вернули на доработку
                     int numberPartSent = partYearEvents.Where(p => p.UserNameСonfirmed == null && p.UserNameSent != null).Count();// количество отчетов еще на рассмотрении
 
-                    if(numberPartReturns+ numberPartSent > 0)
+                    if (numberPartReturns + numberPartSent > 0)
                     {
                         return false;
                     }

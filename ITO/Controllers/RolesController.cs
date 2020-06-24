@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ITO.Models;
 using ITO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace ITO.Controllers
 {
@@ -15,14 +16,17 @@ namespace ITO.Controllers
     {
         RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;
-        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
+        private readonly AllContext db;
+        public RolesController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager, AllContext context)
         {
             _roleManager = roleManager;
             _userManager = userManager;
+            db = context;
         }
-        public IActionResult Index() => View(_roleManager.Roles.ToList());
+        public IActionResult Index() => View(_roleManager.Roles.Where(r => r.Name != "учреждение").ToList());
 
         public IActionResult Create() => View();
+
         [HttpPost]
         public async Task<IActionResult> Create(string name)
         {
@@ -65,7 +69,7 @@ namespace ITO.Controllers
             {
                 // получем список ролей пользователя
                 var userRoles = await _userManager.GetRolesAsync(user);
-                var allRoles = _roleManager.Roles.ToList();
+                var allRoles = _roleManager.Roles.Where(r => r.Name != "учреждение").ToList();
                 ChangeRoleViewModel model = new ChangeRoleViewModel
                 {
                     UserId = user.Id,
@@ -90,9 +94,30 @@ namespace ITO.Controllers
                 // получаем все роли
                 var allRoles = _roleManager.Roles.ToList();
                 // получаем список ролей, которые были добавлены
-                var addedRoles = roles.Except(userRoles);
+                List <string> addedRoles = roles.Except(userRoles).ToList();
+             
                 // получаем роли, которые были удалены
                 var removedRoles = userRoles.Except(roles);
+
+                //список учреждений
+                List<Agency> agencies = await db.Agencies.ToListAsync();
+
+                //список имен учреждений
+                List<string> agenciesNames = new List<string>();
+                foreach (var ag in agencies)
+                {
+                    agenciesNames.Add(ag.Name);
+                }
+
+                //список имен ролей как учреждение
+                var userRolesag = userRoles.Intersect(agenciesNames);// если есть роль учреждение то записывается
+
+
+                if (!addedRoles.Contains("учреждение") && userRolesag != null)
+                {
+                    addedRoles.Add("учреждение");
+                }
+
 
                 await _userManager.AddToRolesAsync(user, addedRoles);
 

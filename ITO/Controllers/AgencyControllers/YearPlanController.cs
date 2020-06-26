@@ -51,34 +51,37 @@ namespace ITO.Controllers.AgencyControllers
 
                                 }
                             }
-                            List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id).ToListAsync();
-                            List<YearEventViewModel> yearEventsViewModel = new List<YearEventViewModel>();
-                            foreach (YearEvent yearEvent in yearEvents)
+                            if (ag.Name != null)
                             {
-                                yearEventsViewModel.Add(new YearEventViewModel()
+                                List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id).ToListAsync();
+                                List<YearEventViewModel> yearEventsViewModel = new List<YearEventViewModel>();
+                                foreach (YearEvent yearEvent in yearEvents)
                                 {
-                                    Id = yearEvent.Id,
-                                    AgencyId = yearEvent.AgencyId,
-                                    Number = yearEvent.Number,
-                                    EventText = yearEvent.EventText,
-                                    FirstQuarter = yearEvent.FirstQuarter,
-                                    SecondQuarter = yearEvent.SecondQuarter,
-                                    ThirdQuarter = yearEvent.ThirdQuarter,
-                                    FourthQuarter = yearEvent.FourthQuarter,
-                                    Unit = yearEvent.Unit,
-                                    Section = yearEvent.Section,
-                                    SubSection = yearEvent.SubSection,
-                                    SubSection1 = yearEvent.SubSection1,
-                                    TypeSection = yearEvent.TypeSection,
-                                    DataYear = yearEvent.DataYear,
-                                    PartYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == yearEvent.Id).ToListAsync(),
-                                    Procent = await GetProcentYearEvent(yearEvent.Id),
-                                    FullPriceBnow = await GetFullPriceBNow(yearEvent.Id),
-                                    FullPriceNotBnow = await GetFullPriceNotBNow(yearEvent.Id),
-                                    NumberPartReturnsandSent = await GetNumberPartReturnsAndSent(yearEvent.Id)
-                                });
+                                    yearEventsViewModel.Add(new YearEventViewModel()
+                                    {
+                                        Id = yearEvent.Id,
+                                        AgencyId = yearEvent.AgencyId,
+                                        Number = yearEvent.Number,
+                                        EventText = yearEvent.EventText,
+                                        FirstQuarter = yearEvent.FirstQuarter,
+                                        SecondQuarter = yearEvent.SecondQuarter,
+                                        ThirdQuarter = yearEvent.ThirdQuarter,
+                                        FourthQuarter = yearEvent.FourthQuarter,
+                                        Unit = yearEvent.Unit,
+                                        Section = yearEvent.Section,
+                                        SubSection = yearEvent.SubSection,
+                                        SubSection1 = yearEvent.SubSection1,
+                                        TypeSection = yearEvent.TypeSection,
+                                        DataYear = yearEvent.DataYear,
+                                        PartYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == yearEvent.Id).ToListAsync(),
+                                        Procent = await GetProcentYearEvent(yearEvent.Id),
+                                        FullPriceBnow = await GetFullPriceBNow(yearEvent.Id),
+                                        FullPriceNotBnow = await GetFullPriceNotBNow(yearEvent.Id),
+                                        NumberPartReturnsandSent = await GetNumberPartReturnsAndSent(yearEvent.Id)
+                                    });
+                                }
+                                return View(yearEventsViewModel);
                             }
-                            return View(yearEventsViewModel);
                         }
                     }
                 }
@@ -285,6 +288,8 @@ namespace ITO.Controllers.AgencyControllers
                         {
                             partYearEvent.Done = partYearEventViewModel.Done;
                         }
+                        partYearEvent.PriceB = partYearEventViewModel.PriceB;
+                        partYearEvent.PriceNotB = partYearEventViewModel.PriceNotB;
 
                         if (partYearEventViewModel.PdfFile != null)
                         {

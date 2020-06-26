@@ -8,6 +8,17 @@
 <h3>Затрачено внебюждетных средств <span class="badge badge-secondary">@Model.YearEventViewModels.Count руб.</span></h3>
 <h3>Затрачено всего средств <span class="badge badge-secondary">@Model.YearEventViewModels.Count руб.</span></h3>
 
+<table>
+    <tr>
+        <td>Учреждение: </td>
+        <td><span class="badge badge-secondary">@Model.Name</span></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
 <div class="row mt-lg-5 mb-lg-5"> 
     @foreach (var yearEventViewModel in Model.YearEventViewModels)
     {

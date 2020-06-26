@@ -1,6 +1,7 @@
 ﻿using ITO.Models;
 using ITO.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
@@ -15,8 +16,11 @@ namespace ITO.Controllers
     public class AgencyController : Controller
     {        
         private readonly AllContext db;
-        public AgencyController(AllContext context)
-        {          
+        RoleManager<IdentityRole> _roleManager;
+
+        public AgencyController(AllContext context, RoleManager<IdentityRole> roleManager)
+        {
+            _roleManager = roleManager;
             db = context;
         }
         public async Task <IActionResult> Index()
@@ -34,6 +38,7 @@ namespace ITO.Controllers
             Agency _agency= await db.Agencies.FirstOrDefaultAsync(a => a.Name == agency.Name);
             if(_agency==null)
             {
+                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(agency.Name));
                 db.Agencies.Add(agency);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");

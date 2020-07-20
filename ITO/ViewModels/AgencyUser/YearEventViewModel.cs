@@ -29,6 +29,7 @@ namespace ITO.ViewModels.AgencyUser
 
         public bool NumberPartReturnsandSent { get; set; }
         public List<DataYear> DataYears { get; set; }
+        public string TrClass { get; set; }
 
     }
 }

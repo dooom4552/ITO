@@ -10,10 +10,11 @@ using Microsoft.EntityFrameworkCore;
 using ITO.ViewModels.AgencyUser;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using ITO.services;
 
 namespace ITO.Controllers.AgencyControllers
 {
-    [Authorize(Roles = "учреждение")]
+    [Authorize(Roles = "учреждение, управление")]
     public class YearPlanController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -30,7 +31,7 @@ namespace ITO.Controllers.AgencyControllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string userName)
+        public async Task<IActionResult> Index(string userName, string dataYear)
         {
             if (userName == User.Identity.Name)
             {
@@ -53,8 +54,14 @@ namespace ITO.Controllers.AgencyControllers
                             }
                             if (ag.Name != null)
                             {
-                                List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id).ToListAsync();
+                                List<YearEvent> yearEvents = await db.YearEvents.Where(ye => ye.AgencyId == ag.Id)
+                                    .Where(ye => ye.DataYear == dataYear)
+                                    .ToListAsync();
                                 List<YearEventViewModel> yearEventsViewModel = new List<YearEventViewModel>();
+                                Procenter procenter = new Procenter();
+                                Pricer pricer = new Pricer();
+                                AgencyYearPlanViewModel agencyYearPlanViewModel = new AgencyYearPlanViewModel();
+
                                 foreach (YearEvent yearEvent in yearEvents)
                                 {
                                     yearEventsViewModel.Add(new YearEventViewModel()
@@ -74,13 +81,18 @@ namespace ITO.Controllers.AgencyControllers
                                         TypeSection = yearEvent.TypeSection,
                                         DataYear = yearEvent.DataYear,
                                         PartYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == yearEvent.Id).ToListAsync(),
-                                        Procent = await GetProcentYearEvent(yearEvent.Id),
-                                        FullPriceBnow = await GetFullPriceBNow(yearEvent.Id),
-                                        FullPriceNotBnow = await GetFullPriceNotBNow(yearEvent.Id),
-                                        NumberPartReturnsandSent = await GetNumberPartReturnsAndSent(yearEvent.Id)
+                                        Procent = await procenter.GetProcentYearEvent(yearEvent.Id, db), 
+                                        FullPriceBnow = await pricer.GetFullPriceBNow(yearEvent.Id, db),
+                                        FullPriceNotBnow = await pricer.GetFullPriceNotBNow(yearEvent.Id, db),                                        
+                                        NumberPartReturnsandSent = await GetNumberPartReturnsAndSent(yearEvent.Id),
+                                        TrClass =await Overdue.GetOverdueYearEvent(yearEvent.Id,db)
                                     });
                                 }
-                                return View(yearEventsViewModel);
+                                agencyYearPlanViewModel.YearEventViewModels = yearEventsViewModel;
+                                agencyYearPlanViewModel.DataYears = await DataYearFilter.GetDataYear(ag.Id, db);
+                                agencyYearPlanViewModel.DataYear = dataYear;
+                                agencyYearPlanViewModel.Name = ag.Name;
+                                return View(agencyYearPlanViewModel);
                             }
                         }
                     }
@@ -206,7 +218,7 @@ namespace ITO.Controllers.AgencyControllers
                 await db.PartYearEvents.AddAsync(partYearEvent);
                 await db.SaveChangesAsync();
             }
-            return RedirectToAction("Index", new { userName = User.Identity.Name });
+            return RedirectToAction("Index", new { userName = User.Identity.Name, dataYear = partYearEventViewModel.DataYear });
         }
 
 
@@ -250,6 +262,7 @@ namespace ITO.Controllers.AgencyControllers
                 {
                     if (await Success(partYearEvent))
                     {
+                        Doner doner = new Doner();
                         PartYearEventViewModel partYearEventViewModel = new PartYearEventViewModel
                         {
                             Id = partYearEvent.Id,
@@ -264,7 +277,7 @@ namespace ITO.Controllers.AgencyControllers
                             UserNameСonfirmed = partYearEvent.UserNameСonfirmed,
                             UserNameSent = partYearEvent.UserNameSent,
                             Сomment = partYearEvent.Сomment,
-                            maxDone = await GetMaxDone(partYearEvent.Id)
+                            maxDone = await doner.GetMaxDone(partYearEvent.Id, db)
                         };
 
                         return View(partYearEventViewModel);
@@ -311,7 +324,8 @@ namespace ITO.Controllers.AgencyControllers
                         partYearEvent.Сomment = null;
                         partYearEvent.UserNameСonfirmed = null;
                         await db.SaveChangesAsync();
-                        return RedirectToAction("Index", new { userName = User.Identity.Name });
+                        //string test =await DataYearFilter.GetStringDataYear(partYearEvent.YearEventId, db);
+                        return RedirectToAction("Index", new { userName = User.Identity.Name, dataYear= await DataYearFilter.GetStringDataYear(partYearEvent.YearEventId, db) });
                     }
                 }
             }
@@ -357,91 +371,6 @@ namespace ITO.Controllers.AgencyControllers
             return false;
         }
 
-        /// <summary>
-        /// Возвращает процент выполнения годового плана по id пункта годового плана
-        /// </summary>
-        /// <param name="idYearEvent">id годового плана</param>
-        /// <returns></returns>
-        public async Task<decimal> GetProcentYearEvent(int idYearEvent)
-        {
-            YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == idYearEvent);
-            List<PartYearEvent> partYearEvents = await db.PartYearEvents
-                .Where(p => p.YearEventId == yearEvent.Id && p.Сomment == null && p.UserNameСonfirmed != null).ToListAsync();
-
-            decimal fullDonePlan = yearEvent.FirstQuarter + yearEvent.SecondQuarter + yearEvent.ThirdQuarter + yearEvent.FourthQuarter;
-            decimal fullDoneNaw = 0;
-            foreach (var part in partYearEvents)
-            {
-                fullDoneNaw += part.Done;
-            }
-            decimal procent = fullDoneNaw / fullDonePlan;
-            return procent;
-        }
-
-        /// <summary>
-        /// Возвращает количество затраченных бюджетных средств на выполнения данного пункта годового плана
-        /// </summary>
-        /// <param name="idYearEvent">id пункта годового плана</param>
-        /// <returns></returns>
-        public async Task<float> GetFullPriceBNow(int idYearEvent)
-        {
-            YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == idYearEvent);
-            List<PartYearEvent> partYearEvents = await db.PartYearEvents
-                .Where(p => p.YearEventId == yearEvent.Id && p.Сomment == null && p.UserNameСonfirmed != null).ToListAsync();
-
-            float FullPriceBnow = 0;
-
-            foreach (var part in partYearEvents)
-            {
-                FullPriceBnow += part.PriceB;
-            }
-            return FullPriceBnow;
-        }
-
-        /// <summary>
-        /// Возвращает количество затраченных внебюджетных средств на выполнения данного пункта годового плана
-        /// </summary>
-        /// <param name="idYearEvent">id пункта годового плана</param>
-        /// <returns></returns>
-        public async Task<float> GetFullPriceNotBNow(int idYearEvent)
-        {
-            YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == idYearEvent);
-            List<PartYearEvent> partYearEvents = await db.PartYearEvents
-                .Where(p => p.YearEventId == yearEvent.Id && p.Сomment == null && p.UserNameСonfirmed != null).ToListAsync();
-
-            float FullPriceNotBnow = 0;
-
-            foreach (var part in partYearEvents)
-            {
-                FullPriceNotBnow += part.PriceNotB;
-            }
-            return FullPriceNotBnow;
-        }
-
-        /// <summary>
-        /// Возвращает количество необходимое для полного завершения данного пункта годового плана по id отчета
-        /// </summary>
-        /// <param name="idPartYearEvent">id отчета годового плана</param>
-        /// <returns></returns>
-        public async Task<int> GetMaxDone(int? idPartYearEvent)
-        {
-            if (idPartYearEvent != null)
-            {
-                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == idPartYearEvent);
-                YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(y => y.Id == partYearEvent.YearEventId);
-                int fullDonePlan = yearEvent.FirstQuarter + yearEvent.SecondQuarter + yearEvent.ThirdQuarter + yearEvent.FirstQuarter;
-
-                List<PartYearEvent> partYearEventsСonfirmed = await db.PartYearEvents
-                    .Where(p => p.YearEventId == partYearEvent.YearEventId && p.Сomment == null && p.UserNameСonfirmed != null).ToListAsync();
-                int fullDoneNaw = 0;
-                foreach (var part in partYearEventsСonfirmed)
-                {
-                    fullDoneNaw += part.Done;
-                }
-                return fullDonePlan - fullDoneNaw;
-            }
-            return 0;
-        }
 
         /// <summary>
         /// Проверяет есть ли по данному пункту годового плана еще не рассмотренные отчеты и отправленные на доработку, проверка нужна для отоброжения кнопки ВЫПОЛНИТЬ, если есть отчеты отправленные на доработку или еще не рассмотренные то выполнить нельзя

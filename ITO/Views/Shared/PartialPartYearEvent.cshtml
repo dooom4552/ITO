@@ -3,18 +3,22 @@
     string x = Model.NumberYearEvent.ToString()+Model.YearEventId.ToString();
     string idd = "collapseExample" + x;
 }
-    <div class="collapse col-lg-2" id="@idd">
-        <img class="img-fluid img-thumbnail" src="@Model.Img" alt="@Model.Done" />
-        <p>Дата: @Model.DateTime</p>
-        <p>Выполнено: @Model.Done</p>
-        <p>Бюджет: @Model.PriceB.ToString("c")</p>
-        <p>Внебюджет: @Model.PriceNotB.ToString("c")</p>
-        <a href="@Model.Pdf" target="_blank">Отчет</a>
-
+    @*<div class="collapse" style="width:100px" id="10part">*@
+    <div class="card m-3 col-md-2">
+        <img class="card-img-top  m-2" src="@Model.Img" alt="@Model.Done" />
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Дата: @Model.DateTime</li>
+            <li class="list-group-item">Выполнено: @Model.Done</li>
+            <li class="list-group-item">Бюджет: @Model.PriceB.ToString("c")</li>
+            <li class="list-group-item">Внебюджет: @Model.PriceNotB.ToString("c")</li>
+        </ul>
+        
+        <a href="@Model.Pdf" class="" target="_blank">Отчет</a>
         @if (!User.IsInRole("управление"))//если учреждение
         {
             @if (Model.UserNameСonfirmed != null && Model.Сomment == null)//если отчет согласован
             {
+                <p>Статус: Согласован</p>
                 <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
                     <input type="submit" value="Подробнее" class="btn btn-success" />
                 </form>

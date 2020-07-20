@@ -1,12 +1,57 @@
-﻿@model IEnumerable<ITO.ViewModels.GovernmentUser.ListAgencyViewModel>
+﻿@model ITO.ViewModels.GovernmentUser.TotalYearPlanViewModel
 @{
     ViewData["Title"] = "Годовой план";
 }
+<div class="container-fluid">
 
-@foreach (var agency in Model)
-{
+</div>
 
-    @Html.Partial("PartialAgency", agency);
 
-}
 
+<h2>Годовой план за: @Model.DataYear год</h2>
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Годовые планы за другие года
+    </a>
+</p>
+
+<div class="collapse" id="collapseExample">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите год план</th>
+            </tr>
+            @foreach (DataYear data in Model.DataYears)
+            {
+                <tr>
+                    <td>@data.Id</td>
+                    <td>@data.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="Government" asp-action="Index"
+                               asp-route-dataYear="@data.Name"
+                               asp-route-userName="@User.Identity.Name">Выбрать</a>
+                        </form>
+                    </td>
+                </tr>
+
+            }
+
+        </table>
+    </div>
+</div>
+
+<h2>Годовой план выполнен на : @Model.Procent.ToString("#0.##%")</h2>
+<h2>Мероприятий запланировано: @Model.FullDonePlan</h2>
+<h2> Мероприятий выполнено: @Model.NowDonePlan</h2>
+<h2> Затрачено бюджетных средств: @Model.FullPriceBnow руб.</h2>
+<h2> Затрачено внебюджетных средств: @Model.FullPriceNotBnow руб.</h2>
+<h2> Затрачено всего средств: @Model.FullPrice руб.</h2>
+<br />
+
+    @foreach (var agency in Model.AgencyYearPlanViewModels)
+    {
+
+        @Html.Partial("PartialAgency", agency);
+
+    }

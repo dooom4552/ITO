@@ -9,6 +9,7 @@ namespace ITO.ViewModels.AgencyUser
 /// </summary>
     public class PartYearEventDetailsViewModel
     {
+        public int Id { get; set; }
         public string Agency { get; set; }//учреждение
         public string DataYear { get; set; }// год годового плана
         public string EventText { get; set; }// текст годового плана
@@ -22,5 +23,7 @@ namespace ITO.ViewModels.AgencyUser
         public DateTime DateTime { get; set; }// время выполнения
         public string UserNameСonfirmed { get; set; }// кто подтвердил  
         public string UserNameSent { get; set; }// кто отправил
+        public string Сomment { get; set; }// кто отправил
+
     }
 }

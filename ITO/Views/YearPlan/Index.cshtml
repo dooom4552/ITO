@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ITO.ViewModels.AgencyUser.YearEventViewModel>
+﻿@model ITO.ViewModels.AgencyUser.AgencyYearPlanViewModel
 @{
     ViewData["Title"] = "Годовой план";
 
@@ -9,25 +9,56 @@
     float fullPriceNotBnow = 0;
 
 
-    foreach (var yearEvent in Model)
+    foreach (var yearEvent in Model.YearEventViewModels)
     {
         fullProcent += yearEvent.Procent;
         fullPriceBnow += yearEvent.FullPriceBnow;
         fullPriceNotBnow += yearEvent.FullPriceNotBnow;
     }
-    fullProcent = fullProcent*100 / Model.Count();
+    fullProcent = fullProcent * 100 / Model.YearEventViewModels.Count();
 
     float fullPrice = fullPriceBnow + fullPriceNotBnow;
 }
+    <h2>ФКУ @Model.Name </h2>
+<h2>Годовой план за: @Model.DataYear год</h2>
+<p>
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        Годовые планы за другие года
+    </a>
+</p>
 
+<div class="collapse" id="collapseExample">
+    <div class="card card-body">
+        <table class="table">
+            <tr>
+                <th>Выберите год план</th>
+            </tr>
+            @foreach (DataYear data in Model.DataYears)
+            {
+                <tr>
+                    <td>@data.Id</td>
+                    <td>@data.Name</td>
+                    <td>
+                        <form>
+                            <a class="btn btn-sm btn-primary" asp-controller="YearPlan" asp-action="Index" 
+                               asp-route-dataYear="@data.Name"
+                               asp-route-userName="@User.Identity.Name">Выбрать</a>
+                        </form>
+                    </td>
+                </tr>
 
+            }
 
-   <h1>Годовой план выполнен на @Math.Round(fullProcent,2) %</h1>
+        </table>
+    </div>
+</div>
+
+<h1>Годовой план выполнен на @Math.Round(fullProcent, 2) %</h1>
 <h2>Затрачено бюджетных средств @fullPriceBnow руб.</h2>
 <h2>Затрачено внебюджетных средств @fullPriceNotBnow руб.</h2>
 <h2>Затрачено всего средств @fullPrice руб.</h2>
 
-@foreach (var item in Model)
+@foreach (var item in Model.YearEventViewModels)
 {
 
     @Html.Partial("PartialYearEvent", item);

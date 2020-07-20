@@ -11,6 +11,7 @@ using ITO.ViewModels.AgencyUser;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using ITO.ViewModels.GovernmentUser;
+using ITO.services;
 
 namespace ITO.Controllers
 {
@@ -31,18 +32,36 @@ namespace ITO.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string userName)
+        public async Task<IActionResult> Index(string userName, string dataYear)
         {
             if (userName == User.Identity.Name)
             {
                 if (User.Identity.Name != null)
                 {
+                    List<YearEvent> yearEvents = await db.YearEvents.Where(y => y.DataYear == dataYear).ToListAsync();
+                    if (yearEvents.Count == 0)
+                    {
+                        dataYear = DateTime.Now.Year.ToString();
+                        yearEvents = await db.YearEvents.Where(y => y.DataYear == dataYear).ToListAsync();
+                        if (yearEvents.Count == 0)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+
                     List<Agency> agencies = await db.Agencies.ToListAsync();
+                    agencies = AgencyFilter.GetAgenciesFilterYearEvent(agencies, yearEvents);
+
+                    var agenciessort = from a in agencies
+                                       orderby a.Name
+                                       select a;// сортировка по имени учреждения
+                    agencies = agenciessort.ToList();
+
                     if (agencies != null)
                     {
                         List<YearEventViewModel> YearEventViewModels = new List<YearEventViewModel>();
 
-                        List<YearEvent> yearEvents = await db.YearEvents.ToListAsync();
+                        Procenter procenter = new Procenter();
                         foreach (YearEvent yearEvent in yearEvents)
                         {
                             YearEventViewModels.Add(new YearEventViewModel()
@@ -61,29 +80,50 @@ namespace ITO.Controllers
                                 SubSection1 = yearEvent.SubSection1,
                                 TypeSection = yearEvent.TypeSection,
                                 DataYear = yearEvent.DataYear,
-                                PartYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == yearEvent.Id).ToListAsync()
+                                PartYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == yearEvent.Id).ToListAsync(),
+                                Procent = await procenter.GetProcentYearEvent(yearEvent.Id, db),
+                                TrClass = await Overdue.GetOverdueYearEvent(yearEvent.Id,db)
                             });
                         }
-
-                        List<ListAgencyViewModel> listAgencyViewModels = new List<ListAgencyViewModel>();
+                        Pricer pricer = new Pricer();
+                        Doner doner = new Doner();
+                        List<AgencyYearPlanViewModel> agencyYearPlanViewModels = new List<AgencyYearPlanViewModel>();
                         foreach (Agency ag in agencies)
                         {
 
-                            listAgencyViewModels.Add(new ListAgencyViewModel()
+                            agencyYearPlanViewModels.Add(new AgencyYearPlanViewModel()
                             {
                                 Id = ag.Id,
                                 Name = ag.Name,
                                 YearEventViewModels = YearEventViewModels.Where(y => y.AgencyId == ag.Id).ToList(),
-                                FullDonePlan = await db.YearEvents.Where(y => y.AgencyId == ag.Id).CountAsync(),
+                                FullDonePlan = await db.YearEvents.Where(y => y.AgencyId == ag.Id).
+                                Where(y => y.DataYear == dataYear).
+                                CountAsync(),
+                                NowDonePlan = await doner.GetYearAgencyDoneNow(ag, db, dataYear),
+                                Procent = await procenter.GetProcentAgency(ag.Id, db, dataYear),
+                                FullPriceBnow = await pricer.GetFullPriceBNowAgency(ag.Id, db, dataYear),
+                                FullPriceNotBnow = await pricer.GetFullPriceNotBNowAgency(ag.Id, db, dataYear)
                             });
 
                         }
-                        return View(listAgencyViewModels);
+
+                        TotalYearPlanViewModel totalYearPlanViewModel = new TotalYearPlanViewModel();
+                        totalYearPlanViewModel.AgencyYearPlanViewModels = agencyYearPlanViewModels;
+                        totalYearPlanViewModel.Procent = await procenter.GetProcentTotal(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullDonePlan = await doner.GetYearPlanCount(agencies, db, dataYear);
+                        totalYearPlanViewModel.NowDonePlan = await doner.GetYearPlanDoneCount(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullPriceBnow = await pricer.GetFullPriceBNowTotal(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullPriceNotBnow = await pricer.GetFullPriceNotBNowTotal(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullPrice = totalYearPlanViewModel.FullPriceBnow + totalYearPlanViewModel.FullPriceNotBnow;
+                        totalYearPlanViewModel.DataYear = dataYear;
+                        totalYearPlanViewModel.DataYears = await db.DataYears.ToListAsync();
+                        return View(totalYearPlanViewModel);
 
                     }
+
                 }
             }
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]
@@ -94,18 +134,38 @@ namespace ITO.Controllers
                 PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == Id);
                 if (partYearEvent != null)
                 {
-                    return View(partYearEvent);
+                    PartYearEventDetailsViewModel partYearEventDetailsViewModel = new PartYearEventDetailsViewModel()
+                    {
+                        Id = (int)Id,                        
+                        NumberYearEvent = partYearEvent.NumberYearEvent,
+                        Done = partYearEvent.Done,
+                        Img = partYearEvent.Img,
+                        Pdf = partYearEvent.Pdf,
+                        PriceB = partYearEvent.PriceB,
+                        PriceNotB = partYearEvent.PriceNotB,
+                        DateTime = partYearEvent.DateTime,
+                        UserNameСonfirmed = partYearEvent.UserNameСonfirmed,
+                        UserNameSent = partYearEvent.UserNameSent
+                    };
+                    YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(ye => ye.Id == partYearEvent.YearEventId);
+
+                    partYearEventDetailsViewModel.DataYear = yearEvent.DataYear;
+                    partYearEventDetailsViewModel.EventText = yearEvent.EventText;
+                    Agency agency = await db.Agencies.FirstOrDefaultAsync(a => a.Id == yearEvent.AgencyId);
+                    partYearEventDetailsViewModel.Agency = agency.Name;
+                    partYearEventDetailsViewModel.FullDonePlan = yearEvent.FirstQuarter + yearEvent.SecondQuarter + yearEvent.ThirdQuarter + yearEvent.FirstQuarter;
+                    return View(partYearEventDetailsViewModel);
                 }
             }
             return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Confirm(PartYearEvent _partYearEvent)
+        public async Task<IActionResult> Confirm(PartYearEventDetailsViewModel partYearEventDetailsViewModel)
         {
-            if (_partYearEvent != null)
+            if (partYearEventDetailsViewModel != null)
             {
-                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == _partYearEvent.Id);
+                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == partYearEventDetailsViewModel.Id);
                 partYearEvent.UserNameСonfirmed = User.Identity.Name;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index", new { userName = User.Identity.Name });
@@ -114,13 +174,13 @@ namespace ITO.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NotConfirm(PartYearEvent _partYearEvent)
+        public async Task<IActionResult> NotConfirm(PartYearEventDetailsViewModel partYearEventDetailsViewModel)
         {
-            if (_partYearEvent != null)
+            if (partYearEventDetailsViewModel != null)
             {
-                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == _partYearEvent.Id);
+                PartYearEvent partYearEvent = await db.PartYearEvents.FirstOrDefaultAsync(p => p.Id == partYearEventDetailsViewModel.Id);
                 partYearEvent.UserNameСonfirmed = User.Identity.Name;
-                partYearEvent.Сomment = _partYearEvent.Сomment;
+                partYearEvent.Сomment = partYearEventDetailsViewModel.Сomment;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index", new { userName = User.Identity.Name });
             }

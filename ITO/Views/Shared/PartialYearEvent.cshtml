@@ -4,7 +4,8 @@
     string idd = "collapseExample" + x;
     string href = "#" + idd;
 
-    int partYEConfCount = Model.PartYearEvents.Where(p => p.UserNameСonfirmed != null).Count();
+    int partYEConfCount = Model.PartYearEvents.Where(p => p.UserNameСonfirmed != null)
+        .Where(p => p.Сomment == null).Count();
     int partYENotConfCount = Model.PartYearEvents.Where(p => p.UserNameСonfirmed == null).Count();
     int partYECommentCount = Model.PartYearEvents.Where(p => p.Сomment != null).Count();
 
@@ -22,106 +23,36 @@
             fullNotPriceB += part.PriceNotB;
         }
     }
-    float fullPrice = fullPriceB+ fullNotPriceB;
-   
+    float fullPrice = fullPriceB + fullNotPriceB;
+
+}
+<table class="table">
+    <tr class="@Model.TrClass">
+        <td>@Model.Number</td>
+        <td>@Model.EventText</td>
+        <td>@Model.FirstQuarter</td>
+        <td>@Model.SecondQuarter</td>
+        <td>@Model.ThirdQuarter</td>
+        <td>@Model.FourthQuarter</td>
+        <td>@fullDone</td>
+        <td>@fullDoneNow</td>
+        <td>@{int procent = fullDoneNow * 100 / fullDone;}@procent %</td>
+        <td>@fullPriceB руб.</td>
+        <td>@fullNotPriceB руб.</td>
+        <td>@fullPrice руб.</td>
+        <td>@Model.Unit</td>
+        <td>
+            @if (!User.IsInRole("управление") && fullDoneNow / fullDone != 1 && Model.NumberPartReturnsandSent)
+            {
+                <a asp-action="Execute" class="btn btn-primary" asp-route-YearEventId="@Model.Id">Выполнить</a>
+            }
+            <a class="btn btn-secondary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Отчеты</a>
+        </td>
+    </tr>
+</table>
+<div class="row">
+    @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
+    {
+        @Html.Partial("PartialPartYearEvent", partYearEvent);
     }
-
-    <div class="row mt-5 mb-2">
-        <table class="table">         
-            <tr>
-                <th width="10">Номер</th>
-                <th width="400">Мероприятие</th>
-                <th width="10">1 кв</th>
-                <th width="10">2 кв</th>
-                <th width="10">3 кв</th>
-                <th width="10">4 кв</th>
-                <th width="10">Всего запланировано</th>
-                <th width="10">Всего выполнено</th>
-                <th width="10">Процент выполнения</th>
-                <th width="10">Затрачено бюджетных средств</th>
-                <th width="10">Затрачено внебюджетных средств</th>
-                <th width="10">Затрачено средств всего</th>
-                <th width="10">Ед. изм.</th>
-                <th></th>
-            </tr>
-            <tr>
-                <td>@Model.Number</td>
-                <td>@Model.EventText</td>
-                <td>@Model.FirstQuarter</td>
-                <td>@Model.SecondQuarter</td>
-                <td>@Model.ThirdQuarter</td>
-                <td>@Model.FourthQuarter</td>
-                <td>@fullDone</td>
-                <td>@fullDoneNow</td>
-                <td>@{int procent = fullDoneNow * 100 / fullDone;}@procent %</td>
-                <td>@fullPriceB руб.</td>
-                <td>@fullNotPriceB руб.</td>
-                <td>@fullPrice руб.</td>
-                <td>@Model.Unit</td>
-                <td>
-                    @if (!User.IsInRole("управление")&& fullDoneNow/ fullDone !=1 && Model.NumberPartReturnsandSent)
-                    {
-                        <a asp-action="Execute" class="btn btn-primary" asp-route-YearEventId="@Model.Id">Выполнить</a>
-                    }
-                    <a class="btn btn-secondary" data-toggle="collapse" href="@href" role="button" aria-expanded="false" aria-controls="@idd">Отчеты</a>
-                </td>
-            </tr>
-        </table>
-        <fieldset>
-            @if (partYEConfCount > 0)
-            {
-                <div class="row">
-                    <h1 class="collapse" id="@idd">Согласованные <br /></h1>
-                </div>
-            }
-
-            <div class="row" title="Согласованые">
-
-                @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
-                {
-                    if (partYearEvent.UserNameСonfirmed != null && partYearEvent.Сomment == null)
-                    {
-                        @Html.Partial("PartialPartYearEvent", partYearEvent);
-                    }
-                }
-            </div>
-        </fieldset>
-
-        <fieldset>
-            @if (partYENotConfCount > 0)
-            {
-                <div class="row">
-                    <h1 class="collapse" id="@idd">Не согласованные <br /></h1>
-                </div>
-            }
-
-            <div class="row" title="Не согласованые">
-
-                @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
-                {
-                    if (partYearEvent.UserNameСonfirmed == null && partYearEvent.Сomment == null)
-                    {
-                        @Html.Partial("PartialPartYearEvent", partYearEvent);
-                    }
-                }
-            </div>
-        </fieldset>
-        <fieldset>
-            @if (partYECommentCount > 0)
-            {
-                <div class="row">
-                    <h1 class="collapse" id="@idd">Отправлены на доработку <br /></h1>
-                </div>
-            }
-            <div class="row" title="Отправлены на доработку">
-
-                @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
-                {
-                    if (partYearEvent.UserNameСonfirmed != null && partYearEvent.Сomment != null)
-                    {
-                        @Html.Partial("PartialPartYearEvent", partYearEvent);
-                    }
-                }
-            </div>
-        </fieldset>
-    </div>
+</div>

@@ -49,14 +49,18 @@
                             @if (User.IsInRole("учреждение"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="YearPlan" asp-action="Index" asp-route-userName="@User.Identity.Name" >Годовой план</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="YearPlan" asp-action="Index"
+                                       asp-route-dataYear="@DateTime.Now.Year.ToString()"
+                                       asp-route-userName="@User.Identity.Name" >Годовой план</a>
                                 </li>
                             }
 
                             @if (User.IsInRole("управление"))
                             {
                                 <li class="nav-item">                                   
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Government" asp-action="Index" asp-route-userName="@User.Identity.Name" >Годовой план</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Government" asp-action="Index" 
+                                       asp-route-dataYear="@DateTime.Now.Year.ToString()" 
+                                       asp-route-userName="@User.Identity.Name" >Годовой план</a>
                                 </li>
                             }
                         </ul>

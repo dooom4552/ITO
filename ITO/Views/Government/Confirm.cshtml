@@ -1,28 +1,72 @@
-﻿@model ITO.Models.PartYearEvent
+﻿@model ITO.ViewModels.AgencyUser.PartYearEventDetailsViewModel
 
-
-<h3>Номер:   <span class="badge badge-secondary">@Model.NumberYearEvent</span></h3>
-<h3>Выполнено:   <span class="badge badge-secondary">@Model.Done</span></h3>
-<h3>Затрачено бюджетных средств:   <span class="badge badge-secondary">@Model.PriceB</span></h3>
-<h3>Затрачено внебюджетных средств:   <span class="badge badge-secondary">@Model.PriceNotB</span></h3>
-<h3>Дата выполнения:   <span class="badge badge-secondary">@Model.DateTime</span></h3>
-<h3>Кто отчитался:   <span class="badge badge-secondary">@Model.UserNameSent</span></h3>
-
-<div class="row form-group">
-    <form asp-action="Confirm" asp-route-id="@Model.Id" method="post">
-        <input type="submit" value="Принять" class="btn btn-success" />
+    <form id="Confirm" asp-action="Confirm" asp-route-id="@Model.Id" method="post">
     </form>
-    <form asp-action="NotConfirm" asp-route-id="@Model.Id" method="post">    
-        <textarea placeholder="введите комментарий" required type="text" asp-for="Сomment" class="form-control"></textarea>
-        <input type="submit" value="Вернуть на доработку" class="btn btn-danger" />
+    <form id="NotConfirm" asp-action="NotConfirm" asp-route-id="@Model.Id" method="post">    
     </form>
-</div>
 
-<div class="col-lg-10">
-    <img class="img-fluid img-thumbnail" src="@Model.Img" alt="@Model.Done" />
-    <iframe class="img-fluid img-thumbnail"  src="@Model.Pdf" alt="@Model.Done" />
-</div>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label class="control-label">Учреждение: @Model.Agency</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Год годового плана: @Model.DataYear</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Номер пункта годового плана: @Model.NumberYearEvent</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Текст мероприятия: @Model.EventText</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Сколько всего запланировано: @Model.FullDonePlan</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Выполнено за данный отчет: @Model.Done</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Затрачено бюджетных средств: @Model.PriceB</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Затрачено средств из иных источников: @Model.PriceNotB</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Затрачено средств: всего: @(Model.PriceB+Model.PriceNotB)</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Дата выполнения: @Model.DateTime</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Кто подтвердил: @Model.UserNameСonfirmed</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Кто отчитался: @Model.UserNameSent</label>
+            </div>
+            <div class="form-group">
+                <input form="Confirm" type="submit" value="Принять" class="btn btn-success" />
+            </div>
+            <div class="form-group">
+                <textarea form="NotConfirm" placeholder="введите комментарий" required type="text" asp-for="Сomment" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <input form="NotConfirm" type="submit" value="Вернуть на доработку" class="btn btn-danger" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="upload-file-container-pdf  col-lg-10">
+            <iframe src="@Model.Pdf" height="300" width="1115" id="pdf"></iframe>
+        </div>
+    </div>
+    <div class="row">
 
+        <div class="upload-file-container col-lg-12">
+            <img src="@Model.Img" class="img-fluid img-thumbnail" id="image" alt="" />
+        </div>
+    </div>
+</div>
 
 
 

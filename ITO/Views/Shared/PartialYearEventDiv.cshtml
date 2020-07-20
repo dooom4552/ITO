@@ -1,0 +1,82 @@
+﻿@model ITO.ViewModels.AgencyUser.YearEventViewModel
+@{
+    string x = Model.Number + Model.Id.ToString();
+    string idd = "collapseExample" + x;
+    string href = "#" + idd;
+
+    int partYEConfCount = Model.PartYearEvents.Where(p => p.UserNameСonfirmed != null)
+        .Where(p => p.Сomment == null).Count();
+    int partYENotConfCount = Model.PartYearEvents.Where(p => p.UserNameСonfirmed == null).Count();
+    int partYECommentCount = Model.PartYearEvents.Where(p => p.Сomment != null).Count();
+
+    int fullDone = Model.FirstQuarter + Model.SecondQuarter + Model.ThirdQuarter + Model.FourthQuarter;// сколько всего запланировано
+
+    int fullDoneNow = 0;// сколько выполнено на данный момент
+    float fullPriceB = 0;// затрачено бюджетных средств
+    float fullNotPriceB = 0;// затрачено внебюджетных средств
+    foreach (var part in Model.PartYearEvents)
+    {
+        if (part.UserNameСonfirmed != null && part.Сomment == null)
+        {
+            fullDoneNow += part.Done;
+            fullPriceB += part.PriceB;
+            fullNotPriceB += part.PriceNotB;
+        }
+    }
+    float fullPrice = fullPriceB + fullNotPriceB;
+}
+
+@foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
+{     
+     @Html.Partial("PartialPartYearEvent", partYearEvent);    
+}
+
+@*@if (partYEConfCount > 0)
+    {
+        <div class="row">
+            <h1 class="collapse" id="10part">Согласованные <br /></h1>
+        </div>
+    }
+
+    <div class="row" title="Согласованые">
+
+        @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
+        {
+            if (partYearEvent.UserNameСonfirmed != null && partYearEvent.Сomment == null)
+            {
+                @Html.Partial("PartialPartYearEvent", partYearEvent);
+            }
+        }
+    </div>
+    @if (partYENotConfCount > 0)
+    {
+        <div class="row">
+            <h1 class="collapse" id="10part">Не согласованные <br /></h1>
+        </div>
+    }
+
+    <div class="row" title="Не согласованые">
+
+        @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
+        {
+            if (partYearEvent.UserNameСonfirmed == null && partYearEvent.Сomment == null)
+            {
+                @Html.Partial("PartialPartYearEvent", partYearEvent);
+            }
+        }
+    </div>
+    @if (partYECommentCount > 0)
+    {
+        <div class="row">
+            <h1 class="collapse" id="10part">Отправлены на доработку <br /></h1>
+        </div>
+    }
+    <div class="row" title="Отправлены на доработку">
+        @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
+        {
+            if (partYearEvent.UserNameСonfirmed != null && partYearEvent.Сomment != null)
+            {
+                @Html.Partial("PartialPartYearEvent", partYearEvent);
+            }
+        }*@
+@*</div>*@

@@ -1,25 +1,54 @@
 ﻿@model ITO.ViewModels.AgencyUser.PartYearEventDetailsViewModel
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="form-group">
+                <label  class="control-label">Учреждение: @Model.Agency</label>
+            </div> 
+            <div class="form-group">
+                <label  class="control-label">Год годового плана: @Model.DataYear</label>
+            </div>
+            <div class="form-group">
+                <label  class="control-label">Номер пункта годового плана: @Model.NumberYearEvent</label>
+            </div> 
+            <div class="form-group">
+                <label  class="control-label">Текст мероприятия: @Model.EventText</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Сколько всего запланировано: @Model.FullDonePlan</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Выполнено за данный отчет: @Model.Done</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Затрачено бюджетных средств: @Model.PriceB</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Затрачено средств из иных источников: @Model.PriceNotB</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Затрачено средств: всего: @(Model.PriceB+Model.PriceNotB)</label>
+            </div> 
+            <div class="form-group">
+                <label class="control-label">Дата выполнения: @Model.DateTime</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Кто подтвердил: @Model.UserNameСonfirmed</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Кто отчитался: @Model.UserNameSent</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="upload-file-container-pdf  col-lg-10">
+            <iframe src="@Model.Pdf" height="300" width="1115" id="pdf"></iframe>
+        </div>
+    </div>
+    <div class="row">
 
-<h1>Учреждение: @Model.Agency</h1>
-<h2>Год: @Model.DataYear</h2>
-<h4>Пункт№: @Model.NumberYearEvent</h4>
-<h4>Текст: @Model.EventText</h4>
-<h4>Сколько всего запланировано: @Model.FullDonePlan</h4>
-
-<h4>Выполнено за данный отчет: @Model.Done</h4>
-<h4>Затрачено бюджетных средств: @Model.PriceB</h4>
-<h4>Затрачено внебюджетных средств: @Model.PriceNotB</h4>
-
-<h4>Дата выполнения: @Model.DateTime</h4>
-<h4>Кто подтвердил: @Model.UserNameСonfirmed</h4>
-<h4>Кто отчитался: @Model.UserNameSent</h4>
-
-
-<div class="col-lg-12">
-    <iframe src="@Model.Pdf" height="300" width="1115" id="pdf"></iframe>
-    <img class="img-fluid img-thumbnail" id="image" src="@Model.Img" alt="" />
-</div>
-
-<div class="row">
-
+        <div class="upload-file-container col-lg-12">
+            <img src="@Model.Img" class="img-fluid img-thumbnail" id="image" alt="" />
+        </div>
+    </div>
 </div>

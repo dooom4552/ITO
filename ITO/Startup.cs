@@ -27,12 +27,21 @@ namespace ITO
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IUserValidator<User>, CustomUserValidator>();
+            //services.AddDbContext<AllContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("AllConnection")));
+            
             services.AddDbContext<AllContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("AllConnection")));
+                options.UseMySql(Configuration.GetConnectionString("AllConnection")));
 
 
+            //services.AddDbContext<ApplicationContext>(options =>
+            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); 
+            
             services.AddDbContext<ApplicationContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
+
+
+
          
             services.AddIdentity<User, IdentityRole>(opts => {
                 opts.Password.RequiredLength = 5;   // минимальная длина

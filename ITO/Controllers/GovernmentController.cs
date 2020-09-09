@@ -82,7 +82,7 @@ namespace ITO.Controllers
                                 DataYear = yearEvent.DataYear,
                                 PartYearEvents = await db.PartYearEvents.Where(p => p.YearEventId == yearEvent.Id).ToListAsync(),
                                 Procent = await procenter.GetProcentYearEvent(yearEvent.Id, db),
-                                TrClass = await Overdue.GetOverdueYearEvent(yearEvent.Id,db)
+                                TrClass = await Overdue.GetOverdueYearEventColor(yearEvent.Id,db)
                             });
                         }
                         Pricer pricer = new Pricer();
@@ -112,6 +112,122 @@ namespace ITO.Controllers
                         totalYearPlanViewModel.Procent = await procenter.GetProcentTotal(agencies, db, dataYear);
                         totalYearPlanViewModel.FullDonePlan = await doner.GetYearPlanCount(agencies, db, dataYear);
                         totalYearPlanViewModel.NowDonePlan = await doner.GetYearPlanDoneCount(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullPriceBnow = await pricer.GetFullPriceBNowTotal(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullPriceNotBnow = await pricer.GetFullPriceNotBNowTotal(agencies, db, dataYear);
+                        totalYearPlanViewModel.FullPrice = totalYearPlanViewModel.FullPriceBnow + totalYearPlanViewModel.FullPriceNotBnow;
+                        totalYearPlanViewModel.DataYear = dataYear;
+                        totalYearPlanViewModel.DataYears = await db.DataYears.ToListAsync();
+                        return View(totalYearPlanViewModel);
+
+                    }
+
+                }
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string userName, string dataYear, DateTime fitstdateTime, DateTime seconddateTime)
+        {
+            if (userName == User.Identity.Name)
+            {
+                if (User.Identity.Name != null)
+                {
+                    List<YearEvent> yearEvents = await db.YearEvents.Where(y => y.DataYear == dataYear).ToListAsync();
+                    if (yearEvents.Count == 0)
+                    {
+                        dataYear = DateTime.Now.Year.ToString();
+                        yearEvents = await db.YearEvents.Where(y => y.DataYear == dataYear).ToListAsync();
+                        if (yearEvents.Count == 0)
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+
+                    List<Agency> agencies = await db.Agencies.ToListAsync();
+                    agencies = AgencyFilter.GetAgenciesFilterYearEvent(agencies, yearEvents);
+
+                    var agenciessort = from a in agencies
+                                       orderby a.Name
+                                       select a;// сортировка по имени учреждения
+                    agencies = agenciessort.ToList();
+
+                    if (agencies != null)
+                    {
+                        List<YearEventViewModel> YearEventViewModels = new List<YearEventViewModel>();
+                        List<PartYearEvent> partYearEvents = await db.PartYearEvents
+                            .Where(p => p.DateTime >= fitstdateTime)
+                            .Where(p => p.DateTime <= seconddateTime.AddDays(1))
+                            .ToListAsync();
+
+
+                        Procenter procenter = new Procenter();
+
+                        YearEventViewModels = (from y in yearEvents
+                                               select new YearEventViewModel
+                                               {
+                                                   Id = y.Id,
+                                                   AgencyId = y.AgencyId,
+                                                   Number = y.Number,
+                                                   EventText = y.EventText,
+                                                   FirstQuarter = y.FirstQuarter,
+                                                   SecondQuarter = y.SecondQuarter,
+                                                   ThirdQuarter = y.ThirdQuarter,
+                                                   FourthQuarter = y.FourthQuarter,
+                                                   Unit = y.Unit,
+                                                   Section = y.Section,
+                                                   SubSection = y.SubSection,
+                                                   SubSection1 = y.SubSection1,
+                                                   TypeSection = y.TypeSection,
+                                                   DataYear = y.DataYear,
+                                                   PartYearEvents = partYearEvents
+                                                   .Where(p => p.YearEventId == y.Id)                                                   
+                                                   .ToList(),
+                                                   Procent = procenter.GetProcentYearEventNotAsync(y.Id, partYearEvents, y.FirstQuarter, y.SecondQuarter, y.ThirdQuarter, y.FourthQuarter),
+                                                   TrClass = Overdue.GetOverdueYearEventColorNotAsync(y.Id, partYearEvents, y.FirstQuarter, y.SecondQuarter, y.ThirdQuarter, y.FourthQuarter),
+                                                   NowDone = partYearEvents
+                                                    .Where(p => p.YearEventId == y.Id)
+                                                    .Where(p => p.Сomment == null)
+                                                    .Where(p => p.UserNameСonfirmed != null)
+                                                    .Sum(p => p.Done),
+                                                   FullDonePlan = y.FirstQuarter + y.SecondQuarter + y.ThirdQuarter + y.FourthQuarter
+                                               }).ToList();
+
+
+                        Pricer pricer = new Pricer();
+                        Doner doner = new Doner();
+                        List<AgencyYearPlanViewModel> agencyYearPlanViewModels = new List<AgencyYearPlanViewModel>();
+                        foreach (Agency ag in agencies)
+                        {
+
+                            agencyYearPlanViewModels.Add(new AgencyYearPlanViewModel()
+                            {
+                                Id = ag.Id,
+                                Name = ag.Name,
+                                YearEventViewModels = YearEventViewModels.Where(y => y.AgencyId == ag.Id).ToList(),
+                                FullDonePlan = await db.YearEvents.Where(y => y.AgencyId == ag.Id).
+                                Where(y => y.DataYear == dataYear).
+                                CountAsync(),
+                                //NowDonePlan = await doner.GetYearAgencyDoneNow(ag, db, dataYear),
+                                NowDonePlan = YearEventViewModels
+                                .Where(y => y.AgencyId == ag.Id)
+                                .Where(y => y.NowDone >= y.FullDonePlan).Count(),
+                                Procent = YearEventViewModels
+                                .Where(y => y.AgencyId == ag.Id)
+                                .Average(y => y.Procent),
+                                FullPriceBnow = await pricer.GetFullPriceBNowAgency(ag.Id, db, dataYear),
+                                FullPriceNotBnow = await pricer.GetFullPriceNotBNowAgency(ag.Id, db, dataYear)
+                            });
+
+                        }
+
+                        TotalYearPlanViewModel totalYearPlanViewModel = new TotalYearPlanViewModel();
+                        totalYearPlanViewModel.AgencyYearPlanViewModels = agencyYearPlanViewModels;
+                        totalYearPlanViewModel.Procent = totalYearPlanViewModel.AgencyYearPlanViewModels.Average(a => a.Procent);
+
+
+                        totalYearPlanViewModel.FullDonePlan = await doner.GetYearPlanCount(agencies, db, dataYear);
+                        totalYearPlanViewModel.NowDonePlan = totalYearPlanViewModel.AgencyYearPlanViewModels.Sum(ag => ag.NowDonePlan);
                         totalYearPlanViewModel.FullPriceBnow = await pricer.GetFullPriceBNowTotal(agencies, db, dataYear);
                         totalYearPlanViewModel.FullPriceNotBnow = await pricer.GetFullPriceNotBNowTotal(agencies, db, dataYear);
                         totalYearPlanViewModel.FullPrice = totalYearPlanViewModel.FullPriceBnow + totalYearPlanViewModel.FullPriceNotBnow;

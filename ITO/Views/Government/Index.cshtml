@@ -2,14 +2,9 @@
 @{
     ViewData["Title"] = "Годовой план";
 }
-<div class="container-fluid">
 
-</div>
-
-
-
-<h2>Годовой план за: @Model.DataYear год</h2>
-<p>
+    <h2 class="text-center">Годовой план за : @Model.DataYear год</h2>
+<p class="text-center">
     <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
         Годовые планы за другие года
     </a>
@@ -41,13 +36,51 @@
     </div>
 </div>
 
-<h2>Годовой план выполнен на : @Model.Procent.ToString("#0.##%")</h2>
-<h2>Мероприятий запланировано: @Model.FullDonePlan</h2>
-<h2> Мероприятий выполнено: @Model.NowDonePlan</h2>
-<h2> Затрачено бюджетных средств: @Model.FullPriceBnow руб.</h2>
-<h2> Затрачено внебюджетных средств: @Model.FullPriceNotBnow руб.</h2>
-<h2> Затрачено всего средств: @Model.FullPrice руб.</h2>
-<br />
+<div class="text-center">
+    <form asp-controller="Government" asp-action="Index" method="post" 
+          asp-route-dataYear="@Model.DataYear"
+          asp-route-userName="@User.Identity.Name">
+
+        @if (DateTime.Now.Year.ToString() == Model.DataYear)///Текущий годовой план
+        {
+
+            <label for="start">Start date:</label>
+            <input name="fitstdateTime" type="date" id="start" required value="@Model.DataYear-01-01"
+                   min="@Model.DataYear-01-01" max="@DateTime.Now.ToString("yyyy-dd-MM")">
+
+            <label for="start">End date:</label>
+            <input name="seconddateTime" type="date" id="start" required value="@DateTime.Now.ToString("yyyy-dd-MM")"
+                   min="@Model.DataYear-01-01" max="@DateTime.Now.ToString("yyyy-dd-MM")">
+        }
+        @if (DateTime.Now.Year.ToString() != Model.DataYear)
+        {
+            <label for="start">Start date:</label>
+            <input name="fitstdateTime" type="date" id="start" required value="@Model.DataYear-01-01"
+                   min="@Model.DataYear-01-01" max="@Model.DataYear-12-31">
+
+            <label for="start">End date:</label>
+            <input name="seconddateTime" type="date" id="start" required value="@Model.DataYear-12-31"
+                   min="@Model.DataYear-01-01" max="@Model.DataYear-12-31">
+        }
+
+        <input type="submit" value="Выбрать" />
+
+    </form>
+</div>
+<div class="container">
+    <div class="row">
+        <ul class="list-group">
+            <li class="list-group-item">Годовой план выполнен на : @Model.Procent.ToString("#0.##%")</li>
+            <li class="list-group-item">Мероприятий запланировано: @Model.FullDonePlan</li>
+            <li class="list-group-item">Мероприятий выполнено: @Model.NowDonePlan</li>
+            <li class="list-group-item">Затрачено бюджетных средств: @Model.FullPriceBnow руб.</li>
+            <li class="list-group-item">Затрачено внебюджетных средств: @Model.FullPriceNotBnow руб.</li>
+            <li class="list-group-item">Затрачено всего средств: @Model.FullPrice руб.</li>
+        </ul>
+
+    </div>
+
+</div>
 
     @foreach (var agency in Model.AgencyYearPlanViewModels)
     {

@@ -1,54 +1,85 @@
 ﻿@model ITO.Models.PartYearEvent
-@{ 
-    string x = Model.NumberYearEvent.ToString()+Model.YearEventId.ToString();
+@{
+    string x = Model.NumberYearEvent.ToString() + Model.YearEventId.ToString();
     string idd = "collapseExample" + x;
 }
-    @*<div class="collapse" style="width:100px" id="10part">*@
-    <div class="card m-3 col-md-2">
-        <img class="card-img-top  m-2" src="@Model.Img" alt="@Model.Done" />
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Дата: @Model.DateTime</li>
-            <li class="list-group-item">Выполнено: @Model.Done</li>
-            <li class="list-group-item">Бюджет: @Model.PriceB.ToString("c")</li>
-            <li class="list-group-item">Внебюджет: @Model.PriceNotB.ToString("c")</li>
-        </ul>
+    <div class="col-3 border">
+        <div class="row-cols-sm-2">
+            <a href="@Model.Pdf" class="card-link text-center" target="_blank">Отчет</a>
+        </div>
+
+        <div class="row-cols-sm-2">
+            
+            @if (!User.IsInRole("управление"))//если учреждение
+            {
+                @if (Model.UserNameСonfirmed != null && Model.Сomment == null)//если отчет согласован
+                {
+                    <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
+                        <input type="submit" value="Согласован " class="btn btn-success " />
+                    </form>
+                }
+                if (Model.UserNameСonfirmed == null && Model.Сomment == null)//если отчет пока не согласован
+                {
+                    <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="Return" method="get">
+                        <input type="submit" value="Вернуть" class="btn btn-primary " />
+                    </form>
+                }
+                if (Model.UserNameСonfirmed != null && Model.Сomment != null)//если отчет вернули на доработку
+                {
+                    <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="Return" method="get">
+                        <input type="submit" value="Изменить" class="btn btn-warning " />
+                    </form>
+                }
+            }
+            else//если управление
+            {
+                @if (Model.UserNameСonfirmed != null && Model.Сomment == null)//если отчет согласован
+                {
+                    <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
+                        <input type="submit" value="Согласован" class="btn btn-success " />
+                    </form>
+                }
+                if (Model.UserNameСonfirmed == null && Model.Сomment == null)//если отчет пока не согласован
+                {
+                    <form asp-route-Id="@Model.Id" asp-controller="Government" asp-action="Confirm" method="get">
+                        <input type="submit" value="Не согласован" class="btn btn-info " />
+                    </form>
+                }
+
+                if (Model.UserNameСonfirmed != null && Model.Сomment != null)//если отчет вернули на доработку
+                {
+                    <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
+                        <input type="submit" value="На доработке" class="btn btn-warning " />
+                    </form>
+                }
+            }
+        </div>
+
+        <div class="row-cols-sm-2">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Дата: @Model.DateTime</li>
+                <li class="list-group-item">Выполнено: @Model.Done</li>
+                <li class="list-group-item">Бюджет: @Model.PriceB.ToString()</li>
+                <li class="list-group-item">Внебюджет: @Model.PriceNotB.ToString()</li>
+                <li class="list-group-item">Кто отправил: @Model.UserNameSent</li>
+
+                @if (@Model.UserNameСonfirmed != null)
+                {
+                    <li class="list-group-item">Кто подтвердил: @Model.UserNameСonfirmed</li>
+                }
+
+                @if (@Model.Сomment != null)
+                {
+                    <li class="list-group-item">Причина: @Model.Сomment</li>
+                }
+            </ul>
+        </div>
+
+        <div class="row align-items-end  p-2 m-2">
+            <div class="container-sm p-2 m-2">
+                <img class="card-img-top " src="@Model.Img" alt="@Model.Done" />
+            </div>          
+        </div>
+       
         
-        <a href="@Model.Pdf" class="" target="_blank">Отчет</a>
-        @if (!User.IsInRole("управление"))//если учреждение
-        {
-            @if (Model.UserNameСonfirmed != null && Model.Сomment == null)//если отчет согласован
-            {
-                <p>Статус: Согласован</p>
-                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
-                    <input type="submit" value="Подробнее" class="btn btn-success" />
-                </form>
-            }
-            if (Model.UserNameСonfirmed == null && Model.Сomment == null)//если отчет пока не согласован
-            {
-                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="Return" method="get">
-                    <input type="submit" value="Вернуть" class="btn btn-primary" />
-                </form>
-            }
-            if (Model.UserNameСonfirmed != null && Model.Сomment != null)//если отчет вернули на доработку
-            {
-                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="Return" method="get">
-                    <input type="submit" value="Изменить" class="btn btn-primary" />
-                </form>
-            }
-        }
-        else//если управление
-        {
-            @if (Model.UserNameСonfirmed != null)//если отчет согласован
-            {
-                <form asp-route-Id="@Model.Id" asp-controller="YearPlan" asp-action="PartDetails">
-                    <input type="submit" value="Подробнее" class="btn btn-outline-primary" />
-                </form>
-            }
-            else//если отчет не согласован
-            {
-                <form asp-route-Id="@Model.Id" asp-controller="Government" asp-action="Confirm" method="get">
-                    <input type="submit" value="Просмотреть" class="btn btn-warning" />
-                </form>
-            }
-        }
     </div>

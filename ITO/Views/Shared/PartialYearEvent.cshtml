@@ -25,34 +25,59 @@
     }
     float fullPrice = fullPriceB + fullNotPriceB;
 
+    string iddiv = "germ" + Model.Id;
 }
-<table class="table">
-    <tr class="@Model.TrClass">
-        <td>@Model.Number</td>
-        <td>@Model.EventText</td>
-        <td>@Model.FirstQuarter</td>
-        <td>@Model.SecondQuarter</td>
-        <td>@Model.ThirdQuarter</td>
-        <td>@Model.FourthQuarter</td>
-        <td>@fullDone</td>
-        <td>@fullDoneNow</td>
-        <td>@{int procent = fullDoneNow * 100 / fullDone;}@procent %</td>
-        <td>@fullPriceB руб.</td>
-        <td>@fullNotPriceB руб.</td>
-        <td>@fullPrice руб.</td>
-        <td>@Model.Unit</td>
-        <td>
-            @if (!User.IsInRole("управление") && fullDoneNow / fullDone != 1 && Model.NumberPartReturnsandSent)
+    <div class="col-md-10">
+        <table class="table">
+            <tr class="@Model.TrClass">
+                <td width="50">Номер</td>
+                <td width="200">Мероприятие</td>
+                <td>1 кв</td>
+                <td>2 кв</td>
+                <td>3 кв</td>
+                <td>4 кв</td>
+                <td>Всего зап.</td>
+                <td>Всего вып.</td>
+                <td>% вып.</td>
+                <td>Зат. б. средств</td>
+                <td>Зат. внеб. средств</td>
+                <td>Зат. средств всего</td>
+                <td>Ед. изм.</td>
+                <td rowspan="2">
+                    @if (!User.IsInRole("управление") && fullDoneNow / fullDone != 1
+                                && Model.NumberPartReturnsandSent)
+                    {
+                        <a asp-action="Execute"
+                           class="badge badge-secondary @Model.TrClass"
+                           asp-route-YearEventId="@Model.Id">Выполнить</a>
+                    }
+
+                    <a class="badge badge-secondary @Model.TrClass" data-toggle="collapse"
+                       href="#@iddiv" role="button"
+                       aria-expanded="false" aria-controls="@iddiv">Отчеты</a>
+                </td>
+            </tr>
+            <tr class="@Model.TrClass">
+                <td>@Model.Number</td>
+                <td>@Model.EventText</td>
+                <td>@Model.FirstQuarter</td>
+                <td>@Model.SecondQuarter</td>
+                <td>@Model.ThirdQuarter</td>
+                <td>@Model.FourthQuarter</td>
+                <td>@fullDone</td>
+                <td>@fullDoneNow</td>
+                <td>@{int procent = fullDoneNow * 100 / fullDone;}@procent %</td>
+                <td>@fullPriceB руб.</td>
+                <td>@fullNotPriceB руб.</td>
+                <td>@fullPrice руб.</td>
+                <td>@Model.Unit</td>
+            </tr>
+        </table>
+
+        <div class="collapse row" id="@iddiv">
+            @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
             {
-                <a asp-action="Execute" class="btn btn-primary" asp-route-YearEventId="@Model.Id">Выполнить</a>
+                @Html.Partial("PartialPartYearEvent", partYearEvent);
             }
-            <a class="btn btn-secondary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">Отчеты</a>
-        </td>
-    </tr>
-</table>
-<div class="row">
-    @foreach (PartYearEvent partYearEvent in Model.PartYearEvents)
-    {
-        @Html.Partial("PartialPartYearEvent", partYearEvent);
-    }
-</div>
+        </div>
+    </div>

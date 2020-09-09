@@ -85,7 +85,7 @@ namespace ITO.Controllers.AgencyControllers
                                         FullPriceBnow = await pricer.GetFullPriceBNow(yearEvent.Id, db),
                                         FullPriceNotBnow = await pricer.GetFullPriceNotBNow(yearEvent.Id, db),                                        
                                         NumberPartReturnsandSent = await GetNumberPartReturnsAndSent(yearEvent.Id),
-                                        TrClass =await Overdue.GetOverdueYearEvent(yearEvent.Id,db)
+                                        TrClass =await Overdue.GetOverdueYearEventColor(yearEvent.Id,db)
                                     });
                                 }
                                 agencyYearPlanViewModel.YearEventViewModels = yearEventsViewModel;
@@ -238,7 +238,8 @@ namespace ITO.Controllers.AgencyControllers
                     PriceNotB = partYearEvent.PriceNotB,
                     DateTime = partYearEvent.DateTime,
                     UserNameСonfirmed = partYearEvent.UserNameСonfirmed,
-                    UserNameSent = partYearEvent.UserNameSent
+                    UserNameSent = partYearEvent.UserNameSent,
+                    Сomment = partYearEvent.Сomment
                 };
                 YearEvent yearEvent = await db.YearEvents.FirstOrDefaultAsync(ye => ye.Id == partYearEvent.YearEventId);
 

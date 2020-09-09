@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ITO.Models
 {
-    public class PartYearEvent 
+    public class PartYearEvent : IPrice, IPartDone, IDateTime, IUserNameSent
     {
         public int Id { get; set; }
         public int YearEventId { get; set; }

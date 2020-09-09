@@ -3,16 +3,16 @@
     <div class="row">
         <div class="col">
             <div class="form-group">
-                <label  class="control-label">Учреждение: @Model.Agency</label>
-            </div> 
-            <div class="form-group">
-                <label  class="control-label">Год годового плана: @Model.DataYear</label>
+                <label class="control-label">Учреждение: @Model.Agency</label>
             </div>
             <div class="form-group">
-                <label  class="control-label">Номер пункта годового плана: @Model.NumberYearEvent</label>
-            </div> 
+                <label class="control-label">Год годового плана: @Model.DataYear</label>
+            </div>
             <div class="form-group">
-                <label  class="control-label">Текст мероприятия: @Model.EventText</label>
+                <label class="control-label">Номер пункта годового плана: @Model.NumberYearEvent</label>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Текст мероприятия: @Model.EventText</label>
             </div>
             <div class="form-group">
                 <label class="control-label">Сколько всего запланировано: @Model.FullDonePlan</label>
@@ -28,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label class="control-label">Затрачено средств: всего: @(Model.PriceB+Model.PriceNotB)</label>
-            </div> 
+            </div>
             <div class="form-group">
                 <label class="control-label">Дата выполнения: @Model.DateTime</label>
             </div>
@@ -38,6 +38,12 @@
             <div class="form-group">
                 <label class="control-label">Кто отчитался: @Model.UserNameSent</label>
             </div>
+            @if (Model.Сomment != null)
+            {
+                <div class="form-group">
+                    <label class="control-label font-weight-bold">Причина: @Model.Сomment</label>
+                </div>
+            }
         </div>
     </div>
     <div class="row">

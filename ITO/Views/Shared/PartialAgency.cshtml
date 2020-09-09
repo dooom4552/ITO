@@ -1,55 +1,30 @@
 ﻿@model ITO.ViewModels.AgencyUser.AgencyYearPlanViewModel
 @{
     ViewData["Title"] = "Годовой план";    
-    decimal fullProcent = 0;
+      float fullPrice= Model.FullPriceBnow + Model.FullPriceNotBnow;  
+}         
+            <div class="container-fluid float-left m-5">
+                <div class="row border">
+                    <div class="col-2">
+                        <ul>
+                            <li>@Model.Name</li>
+                            <li>Всего запланировано: @Model.FullDonePlan</li>
+                            <li>Выполнено: @Model.NowDonePlan</li>
+                            <li>% выполнения: @Model.Procent.ToString("#0.##%")</li>
+                            <li>Затрачено бюджетных средств @Model.FullPriceBnow руб.</li>
+                            <li>Затрачено внебюджетных средств @Model.FullPriceNotBnow руб.</li>
+                            <li>Затрачено всего средств @fullPrice  руб.</li>
+                        </ul>
+                    </div>
+                    <div class="col-10">
+                        <div class="container-fluid">
 
-
-    float fullPrice= Model.FullPriceBnow + Model.FullPriceNotBnow;
-
-
-    foreach (var yearEvent in Model.YearEventViewModels)
-    {
-        fullProcent += yearEvent.Procent;        
-    }
-    fullProcent = fullProcent * 100 / Model.YearEventViewModels.Count();
-}
-        <div class="mb-2">
-            <h3>
-                ФКУ @Model.Name
-                Годовой план выполнен на @Model.Procent.ToString("#0.##%")
-                Всего запланировано пунктов @Model.FullDonePlan
-                Всего выполнено пунктов @Model.NowDonePlan
-            </h3>
-            <h4>
-                Затрачено бюджетных средств @Model.FullPriceBnow руб.
-                Затрачено внебюджетных средств @Model.FullPriceNotBnow руб.
-                Затрачено всего средств @fullPrice  руб.
-            </h4>
-            <div>
-                <table class="table">
-                    <tr>
-                        <th width="10">Номер</th>
-                        <th width="400">Мероприятие</th>
-                        <th width="10">1 кв</th>
-                        <th width="10">2 кв</th>
-                        <th width="10">3 кв</th>
-                        <th width="10">4 кв</th>
-                        <th width="10">Всего запланировано</th>
-                        <th width="10">Всего выполнено</th>
-                        <th width="10">Процент выполнения</th>
-                        <th width="10">Затрачено бюджетных средств</th>
-                        <th width="10">Затрачено внебюджетных средств</th>
-                        <th width="10">Затрачено средств всего</th>
-                        <th width="10">Ед. изм.</th>
-                        <th></th>
-                    </tr>
-                </table>
+                            @foreach (var yearEventViewModel in Model.YearEventViewModels)
+                            {
+                                @Html.Partial("PartialYearEvent", yearEventViewModel);
+                            }
+                        </div>
+                    </div>
+                </div>                
             </div>
-            <div>
-                @foreach (var yearEventViewModel in Model.YearEventViewModels)
-                {
-                    @Html.Partial("PartialYearEvent", yearEventViewModel);
-                }
-            </div>
-        </div>
     

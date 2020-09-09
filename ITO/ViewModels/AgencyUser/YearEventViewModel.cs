@@ -24,6 +24,8 @@ namespace ITO.ViewModels.AgencyUser
         public string DataYear { get; set; }
         public List<PartYearEvent> PartYearEvents { get; set; }//коллекция отчетов
         public decimal Procent { get; set; }
+        public int NowDone { get; set; }
+        public int FullDonePlan { get; set; }
         public float FullPriceBnow { get; set; }
         public float FullPriceNotBnow { get; set; }
 

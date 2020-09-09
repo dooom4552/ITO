@@ -5,30 +5,36 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>@ViewData["Title"] - ITO</title>
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link href="https://stackpath.bootstrapcdn.com/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://use.fontwesome.com/releases/v5.6.3/css/all.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/css/bootstrap-table.min.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap/dist/extensions/filter-control/bootstrap-table-filter-control.css" rel="stylesheet" />
+        <link href="~/lib/MDB-Free_4.19.1/css/mdb.min.css" rel="stylesheet" />
+
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/css/FileLoad.css" />
 
     </head>
     <body>
-        <form method="post" id="AgencyUserForm" asp-area="" asp-controller="YearPlan" asp-action="Index" 
+        <form method="post" id="AgencyUserForm" asp-area="" asp-controller="YearPlan" asp-action="Index"
               asp-route-userName="@User.Identity.Name">
-        </form> 
-        <form method="post" id="GovernmentForm" asp-area="" asp-controller="Government" asp-action="Index" 
+        </form>
+        <form method="post" id="GovernmentForm" asp-area="" asp-controller="Government" asp-action="Index"
               asp-route-userName="@User.Identity.Name">
         </form>
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container-fluid">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ITO</a>
+                    @*<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ITO</a>*@
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                             aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                         <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
+                            @*<li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                            </li>
+                            </li>*@
                             @if (User.IsInRole("admin"))
                             {
                                 <li class="nav-item">
@@ -51,20 +57,34 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="YearPlan" asp-action="Index"
                                        asp-route-dataYear="@DateTime.Now.Year.ToString()"
-                                       asp-route-userName="@User.Identity.Name" >Годовой план</a>
+                                       asp-route-userName="@User.Identity.Name">Годовой план</a>
+                                </li> 
+                                
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="DivisionEnent" asp-action="Index"
+                                       asp-route-dataYear="@DateTime.Now.Year.ToString()"
+                                       asp-route-userName="@User.Identity.Name">Учет мероприятий</a>
                                 </li>
                             }
 
                             @if (User.IsInRole("управление"))
                             {
-                                <li class="nav-item">                                   
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Government" asp-action="Index" 
-                                       asp-route-dataYear="@DateTime.Now.Year.ToString()" 
-                                       asp-route-userName="@User.Identity.Name" >Годовой план</a>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Government" asp-action="Index"
+                                       asp-route-dataYear="@DateTime.Now.Year.ToString()"
+                                       asp-route-userName="@User.Identity.Name">Годовой план</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Government" asp-action=""
+                                       asp-route-dataYear="@DateTime.Now.Year.ToString()"
+                                       asp-route-userName="@User.Identity.Name">Учет мероприятий</a>
                                 </li>
                             }
                         </ul>
                     </div>
+
+                    <partial name="_LoginPartial" />
+
                 </div>
             </nav>
         </header>
@@ -74,17 +94,22 @@
             </main>
         </div>
 
-        <footer class="border-top footer text-muted">
+        @*<footer class="border-top footer text-muted">
             <div class="container">
                 &copy; 2020 - ITO - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
-        </footer>
+        </footer>*@
         <script defer src="~/js/QuaterScript.js"></script>
         <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap-table.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
         <script src="~/js/LoadScript.js" asp-append-version="true"></script>
-
+        <script src="~/lib/bootstrap/dist/extensions/toolbar/bootstrap-table-toolbar.js"></script>
+        <script src="~/lib/bootstrap/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
+        <script src="~/lib/MDB-Free_4.19.1/js/mdb.min.js"></script>
         @RenderSection("Scripts", required: false)
     </body>
 </html>

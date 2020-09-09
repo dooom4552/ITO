@@ -12,7 +12,7 @@ namespace ITO.services
         private readonly AllContext db;
        
         /// <summary>
-        /// Возвращает процент выполнения годового плана по id пункта годового плана
+        /// Возвращает процент выполнения пункта годового плана по id пункта годового плана
         /// </summary>
         /// <param name="idYearEvent">id годового плана</param>
         /// <returns></returns>
@@ -31,7 +31,32 @@ namespace ITO.services
             decimal procent = fullDoneNaw / fullDonePlan;
             return procent;
         }
+        public  decimal GetProcentYearEventNotAsync(int idYearEvent, List<PartYearEvent> _partYearEvents, int FirstQuarter, int SecondQuarter, int ThirdQuarter, int FourthQuarter)
+        {
 
+            List<PartYearEvent> partYearEvents = _partYearEvents
+                .Where(p => p.YearEventId == idYearEvent)
+                .Where(p => p.Сomment == null)
+                .Where(p => p.UserNameСonfirmed != null)
+                .ToList();
+
+            decimal fullDonePlan = FirstQuarter + SecondQuarter + ThirdQuarter + FourthQuarter;
+            decimal fullDoneNaw = 0;
+            foreach (var part in partYearEvents)
+            {
+                fullDoneNaw += part.Done;
+            }
+            decimal procent = fullDoneNaw / fullDonePlan;
+            return procent;
+        }
+
+        /// <summary>
+        /// Возвращает процент выполнения  годового плана по id гучреждения и по году
+        /// </summary>
+        /// <param name="idAgency"></param>
+        /// <param name="db"></param>
+        /// <param name="dataYear"></param>
+        /// <returns></returns>
         public async Task<decimal> GetProcentAgency(int idAgency, AllContext db, string dataYear)
         {
 
@@ -48,6 +73,13 @@ namespace ITO.services
             return aver;
         }
 
+        /// <summary>
+        /// Возвращает процент выполнения  годового плана по году и списку учреждений
+        /// </summary>
+        /// <param name="agencies"></param>
+        /// <param name="db"></param>
+        /// <param name="dataYear"></param>
+        /// <returns></returns>
         public async Task<decimal> GetProcentTotal(List<Agency> agencies, AllContext db, string dataYear)
         {
             List<decimal> procents = new List<decimal>();

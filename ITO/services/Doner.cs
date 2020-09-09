@@ -34,7 +34,7 @@ namespace ITO.services
             return 0;
         }
         /// <summary>
-        /// сколько запланировано
+        /// возвращает сколько запланировано
         /// </summary>
         /// <param name="agencies"></param>
         /// <param name="db"></param>
@@ -79,6 +79,13 @@ namespace ITO.services
             number = yearEventsFilter.Count();
             return number;
         }
+        /// <summary>
+        /// возвращает количество полностью выполненных пунктов годового плана по учреждению и году
+        /// </summary>
+        /// <param name="agency"></param>
+        /// <param name="db"></param>
+        /// <param name="dataYear"></param>
+        /// <returns></returns>
         public async Task<int> GetYearAgencyDoneNow(Agency agency, AllContext db, string dataYear)
         {
             Procenter procenter = new Procenter();
@@ -107,6 +114,18 @@ namespace ITO.services
         {
             List<PartYearEvent> partYearEventsСonfirmed = await db.PartYearEvents
                     .Where(p => p.YearEventId == YeId && p.Сomment == null && p.UserNameСonfirmed != null).ToListAsync();
+            int fullDoneNaw = 0;
+            foreach (var part in partYearEventsСonfirmed)
+            {
+                fullDoneNaw += part.Done;
+            }
+            return fullDoneNaw;
+        }
+        
+        public static  int GetNowDoneNotAsync(int YeId, AllContext db)
+        {
+            List<PartYearEvent> partYearEventsСonfirmed =  db.PartYearEvents
+                    .Where(p => p.YearEventId == YeId && p.Сomment == null && p.UserNameСonfirmed != null).ToList();
             int fullDoneNaw = 0;
             foreach (var part in partYearEventsСonfirmed)
             {

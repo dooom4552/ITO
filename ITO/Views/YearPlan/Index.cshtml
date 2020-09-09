@@ -53,17 +53,24 @@
     </div>
 </div>
 
-<h1>Годовой план выполнен на @Math.Round(fullProcent, 2) %</h1>
-<h2>Затрачено бюджетных средств @fullPriceBnow руб.</h2>
-<h2>Затрачено внебюджетных средств @fullPriceNotBnow руб.</h2>
-<h2>Затрачено всего средств @fullPrice руб.</h2>
+<div class="container-fluid float-left">
+    <div class="row">
+        <ul>
+            <li>Годовой план выполнен на @Math.Round(fullProcent, 2) % </li>
+            <li> Затрачено внебюджетных средств @fullPriceNotBnow руб.</li>
+            <li> Затрачено всего средств @fullPrice руб.</li>
+        </ul>
+</div>
+    <div class="row">
+        @foreach (var item in Model.YearEventViewModels)
+        {
 
-@foreach (var item in Model.YearEventViewModels)
-{
+            @Html.Partial("PartialYearEvent", item);
 
-    @Html.Partial("PartialYearEvent", item);
+        }
+    </div>
+</div>
 
-}
 
 
 
